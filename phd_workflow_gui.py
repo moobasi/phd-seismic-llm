@@ -28,6 +28,87 @@ import sys
 import json
 from datetime import datetime
 
+# =============================================================================
+# STATE MANAGEMENT
+# =============================================================================
+
+class ProcessingState:
+    """Manages processing state persistence."""
+
+    def __init__(self, state_file: Path = None):
+        self.state_file = state_file or Path(__file__).parent / "processing_state.json"
+        self.completed_steps: List[int] = []
+        self.step_timestamps: Dict[str, str] = {}
+        self.step_results: Dict[str, dict] = {}
+        self.notes: List[str] = []
+        self.last_updated: str = ""
+        self.load()
+
+    def load(self):
+        """Load state from file."""
+        if self.state_file.exists():
+            try:
+                with open(self.state_file, 'r') as f:
+                    data = json.load(f)
+                self.completed_steps = data.get('completed_steps', [])
+                self.step_timestamps = data.get('step_timestamps', {})
+                self.step_results = data.get('step_results', {})
+                self.notes = data.get('notes', [])
+                self.last_updated = data.get('last_updated', '')
+            except Exception as e:
+                print(f"Warning: Could not load state: {e}")
+
+    def save(self):
+        """Save state to file."""
+        self.last_updated = datetime.now().isoformat()
+        data = {
+            'completed_steps': self.completed_steps,
+            'step_timestamps': self.step_timestamps,
+            'step_results': self.step_results,
+            'notes': self.notes,
+            'last_updated': self.last_updated
+        }
+        try:
+            with open(self.state_file, 'w') as f:
+                json.dump(data, f, indent=2)
+        except Exception as e:
+            print(f"Warning: Could not save state: {e}")
+
+    def mark_completed(self, step_num: int, results: dict = None):
+        """Mark a step as completed."""
+        if step_num not in self.completed_steps:
+            self.completed_steps.append(step_num)
+        self.step_timestamps[str(step_num)] = datetime.now().isoformat()
+        if results:
+            self.step_results[str(step_num)] = results
+        self.save()
+
+    def is_completed(self, step_num: int) -> bool:
+        """Check if a step is completed."""
+        return step_num in self.completed_steps
+
+    def get_timestamp(self, step_num: int) -> Optional[str]:
+        """Get completion timestamp for a step."""
+        return self.step_timestamps.get(str(step_num))
+
+    def reset_step(self, step_num: int):
+        """Reset a step to run again."""
+        if step_num in self.completed_steps:
+            self.completed_steps.remove(step_num)
+        if str(step_num) in self.step_timestamps:
+            del self.step_timestamps[str(step_num)]
+        if str(step_num) in self.step_results:
+            del self.step_results[str(step_num)]
+        self.save()
+
+    def reset_all(self):
+        """Reset all progress."""
+        self.completed_steps = []
+        self.step_timestamps = {}
+        self.step_results = {}
+        self.save()
+
+
 # Import project configuration
 try:
     from project_config import ProjectConfig, get_config, set_config, get_framework_dir
@@ -306,6 +387,9 @@ class PHDWorkflowApp:
         # Load configuration
         self.config = get_config()
 
+        # Load processing state
+        self.state = ProcessingState()
+
         # Track step cards
         self.step_cards: Dict[int, StepCard] = {}
 
@@ -315,6 +399,9 @@ class PHDWorkflowApp:
 
         # Load saved paths
         self._load_config_to_ui()
+
+        # Load saved progress
+        self._load_saved_progress()
 
     def _create_menu(self):
         """Create menu bar."""
@@ -335,6 +422,9 @@ class PHDWorkflowApp:
         tools_menu.add_command(label="AI Assistant", command=self._open_ai_assistant)
         tools_menu.add_separator()
         tools_menu.add_command(label="Run All Steps", command=self._run_all_steps)
+        tools_menu.add_command(label="Run Remaining Steps", command=self._run_remaining_steps)
+        tools_menu.add_separator()
+        tools_menu.add_command(label="Reset All Progress", command=self._reset_all_progress)
         menubar.add_cascade(label="Tools", menu=tools_menu)
 
         # Help menu
@@ -554,6 +644,27 @@ class PHDWorkflowApp:
         self.path_selectors['output'].set(self.config.output_directory)
         self.project_name_var.set(self.config.project_name)
 
+    def _load_saved_progress(self):
+        """Load and display saved progress."""
+        for step_num, card in self.step_cards.items():
+            if self.state.is_completed(step_num):
+                card.set_status("completed")
+                timestamp = self.state.get_timestamp(step_num)
+                if timestamp:
+                    # Show completion time in tooltip or label
+                    try:
+                        dt = datetime.fromisoformat(timestamp)
+                        card.run_btn.config(text=f"Re-run (Done {dt.strftime('%m/%d')})")
+                    except:
+                        card.run_btn.config(text="Re-run")
+            else:
+                card.set_status("pending")
+
+        # Show summary
+        completed_count = len(self.state.completed_steps)
+        if completed_count > 0:
+            self.root.title(f"PhD Seismic Workflow - {completed_count}/9 steps completed")
+
     def _validate_config(self):
         """Validate current configuration."""
         self.config.project_name = self.project_name_var.get()
@@ -661,11 +772,14 @@ class PHDWorkflowApp:
                 )
 
                 # Update UI based on result
-                self.root.after(0, lambda: card.set_status(
-                    "completed" if result.returncode == 0 else "error"
-                ))
-
-                if result.returncode != 0:
+                if result.returncode == 0:
+                    # Mark step as completed and save state
+                    self.state.mark_completed(step_num)
+                    self.root.after(0, lambda: card.set_status("completed"))
+                    self.root.after(0, lambda: card.run_btn.config(text="Re-run"))
+                    self.root.after(0, self._update_title)
+                else:
+                    self.root.after(0, lambda: card.set_status("error"))
                     self.root.after(0, lambda: messagebox.showerror(
                         f"Step {step_num} Error",
                         f"Error running step:\n{result.stderr[:500]}"
@@ -680,11 +794,67 @@ class PHDWorkflowApp:
         thread = threading.Thread(target=run, daemon=True)
         thread.start()
 
+    def _update_title(self):
+        """Update window title with progress."""
+        completed_count = len(self.state.completed_steps)
+        self.root.title(f"PhD Seismic Workflow - {completed_count}/9 steps completed")
+
     def _run_all_steps(self):
         """Run all processing steps sequentially."""
-        if messagebox.askyesno("Run All Steps", "Run all 9 processing steps? This may take a while."):
-            # TODO: Implement sequential execution with progress tracking
-            messagebox.showinfo("Info", "Running all steps sequentially...")
+        if messagebox.askyesno("Run All Steps",
+            "Run all 9 processing steps?\n\n"
+            "This will re-run ALL steps including completed ones.\n"
+            "Use 'Run Remaining Steps' to skip completed steps."):
+            self._run_steps_sequential(list(range(1, 10)))
+
+    def _run_remaining_steps(self):
+        """Run only steps that haven't been completed."""
+        remaining = [s for s in range(1, 10) if not self.state.is_completed(s)]
+        if not remaining:
+            messagebox.showinfo("All Done", "All steps have been completed!")
+            return
+        if messagebox.askyesno("Run Remaining Steps",
+            f"Run {len(remaining)} remaining steps?\n\n"
+            f"Steps to run: {', '.join(map(str, remaining))}"):
+            self._run_steps_sequential(remaining)
+
+    def _run_steps_sequential(self, steps: List[int]):
+        """Run a list of steps sequentially."""
+        def run_next(step_index=0):
+            if step_index >= len(steps):
+                messagebox.showinfo("Complete", "All requested steps have been processed.")
+                return
+
+            step_num = steps[step_index]
+            self._run_step(step_num)
+
+            # Schedule next step check (we'll improve this with proper completion callback)
+            # For now, wait for the step to complete before proceeding
+            def check_and_continue():
+                card = self.step_cards[step_num]
+                if card.status == "completed":
+                    self.root.after(1000, lambda: run_next(step_index + 1))
+                elif card.status == "error":
+                    if messagebox.askyesno("Step Failed",
+                        f"Step {step_num} failed. Continue with remaining steps?"):
+                        self.root.after(500, lambda: run_next(step_index + 1))
+                else:
+                    # Still running, check again
+                    self.root.after(2000, check_and_continue)
+
+            self.root.after(3000, check_and_continue)
+
+        run_next()
+
+    def _reset_all_progress(self):
+        """Reset all processing progress."""
+        if messagebox.askyesno("Reset Progress",
+            "Reset all processing progress?\n\n"
+            "This will mark all steps as not completed.\n"
+            "Your output files will NOT be deleted."):
+            self.state.reset_all()
+            self._load_saved_progress()
+            messagebox.showinfo("Reset", "All progress has been reset.")
 
     # =========================================================================
     # Tool launchers
