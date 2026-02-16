@@ -1,0 +1,115 @@
+{
+  "metadata": {
+    "created": "2026-02-10",
+    "author": "Moses Ekene Obasi",
+    "project": "PhD Research - Bornu Chad Basin Seismic Interpretation",
+    "institution": "University of Calabar, Nigeria",
+    "supervisor": "Prof. Dominic Akam Obi",
+    "sources": [
+      "Avbovbo et al. (1986) - Depositional and structural styles in Chad Basin, AAPG Bulletin",
+      "Okosun (1995) - Review of the stratigraphy of Bornu Basin, Journal of Mining and Geology",
+      "Obaje (2009) - Geology and Mineral Resources of Nigeria, Springer",
+      "NNPC Well Completion Reports",
+      "Shell Nigeria EP Regional Studies"
+    ],
+    "note": "Formation tops from published literature and well completion reports. Verify against log signatures."
+  },
+  "formations_info": {
+    "Chad_Fm": {
+      "full_name": "Chad Formation",
+      "age": "Quaternary to Pliocene",
+      "lithology": "Lacustrine sands, clays, diatomites",
+      "log_character": "Low GR (<60 API), low resistivity, fresh water",
+      "seismic_pick": "Trough - base of chaotic reflectors"
+    },
+    "Fika_Shale": {
+      "full_name": "Fika Shale",
+      "age": "Turonian",
+      "lithology": "Dark grey marine shale with minor limestone",
+      "log_character": "High GR (>100 API), low resistivity, high density",
+      "seismic_pick": "Trough - strong continuous reflector"
+    },
+    "Gongila_Fm": {
+      "full_name": "Gongila Formation",
+      "age": "Cenomanian",
+      "lithology": "Interbedded marine sandstone and shale",
+      "log_character": "Variable GR, moderate resistivity",
+      "seismic_pick": "Variable - depends on sand development"
+    },
+    "Bima_Sst": {
+      "full_name": "Bima Sandstone",
+      "age": "Albian",
+      "lithology": "Continental fluvial sandstone with conglomerates",
+      "log_character": "Low GR (<60 API), high resistivity if HC present",
+      "seismic_pick": "Peak - strong positive reflection"
+    }
+  },
+  "wells": {
+    "BULTE-1": {
+      "source": "NNPC Well Completion Report / Log Interpretation",
+      "KB_elevation_m": 305,
+      "TD_m": 1467,
+      "Chad_Fm": 380,
+      "Fika_Shale": 720,
+      "Gongila_Fm": 1050,
+      "Bima_Sst": 1280,
+      "picking_notes": "Good log quality. Clear Fika Shale at 720m marked by GR increase to 120 API.",
+      "confidence": "High"
+    },
+    "HERWA-01": {
+      "source": "Shell Nigeria EP / Log Interpretation",
+      "KB_elevation_m": 298,
+      "TD_m": 2205,
+      "Chad_Fm": 450,
+      "Fika_Shale": 890,
+      "Gongila_Fm": 1350,
+      "Bima_Sst": 1680,
+      "picking_notes": "Excellent log quality. Thick Fika section. Bima shows good sand development.",
+      "confidence": "High"
+    },
+    "MASU-1": {
+      "source": "NNPC Well Completion Report",
+      "KB_elevation_m": 320,
+      "TD_m": 3100,
+      "Chad_Fm": null,
+      "Fika_Shale": 2025,
+      "Gongila_Fm": 2450,
+      "Bima_Sst": 2850,
+      "picking_notes": "Deep well. Started below Chad Fm. Logs start at 2025m. Very thick Bima section.",
+      "confidence": "Medium"
+    },
+    "KASADE-01": {
+      "source": "Regional correlation / Log Interpretation",
+      "KB_elevation_m": 312,
+      "TD_m": 1600,
+      "Chad_Fm": 350,
+      "Fika_Shale": 680,
+      "Gongila_Fm": 980,
+      "Bima_Sst": 1250,
+      "picking_notes": "Moderate log quality. Picks based on regional correlation with BULTE-1.",
+      "confidence": "Medium"
+    },
+    "NGAMMAEAST-1": {
+      "source": "NNPC Regional Study",
+      "KB_elevation_m": 285,
+      "TD_m": 3260,
+      "Chad_Fm": 320,
+      "Fika_Shale": 850,
+      "Gongila_Fm": 1600,
+      "Bima_Sst": 2100,
+      "picking_notes": "Deep well with complete section. Thick Gongila development.",
+      "confidence": "High"
+    },
+    "NGORNORTH-1": {
+      "source": "NNPC Regional Study",
+      "KB_elevation_m": 275,
+      "TD_m": 1200,
+      "Chad_Fm": 280,
+      "Fika_Shale": 520,
+      "Gongila_Fm": 850,
+      "Bima_Sst": 1100,
+      "picking_notes": "Shallow well. Thin section. Chad Fm thicker than average.",
+      "confidence": "High"
+    }
+  }
+}

@@ -1,9 +1,9 @@
 {
-  "input_directory": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\2D",
-  "output_dir": "C:\\Users\\moses\\Documents\\PHD REVIEW\\outputs\\2d_analysis",
-  "reference_3d_segy": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\3D\\3D Bornu Chad",
-  "well_header_file": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\WellHeader\\location.xlsx",
-  "las_directory": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Logs\\ALL_WELL",
+  "input_directory": "",
+  "output_dir": "",
+  "reference_3d_segy": "",
+  "well_header_file": "",
+  "las_directory": "",
   "line_prefix_filter": ["CH-78"],
   "include_migrated": true,
   "include_stacked": true,
@@ -24,5 +24,6 @@
     "dominant_freq_hz": 18.0,
     "bandwidth_hz": 10.2,
     "resolution_m": 42
-  }
+  },
+  "_note": "Paths should be configured via project_config.json or GUI"
 }

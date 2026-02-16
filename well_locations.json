@@ -1,0 +1,92 @@
+{
+  "coordinate_system": "UTM Zone 33N (WGS84)",
+  "datum": "WGS84",
+  "units": "meters",
+  "notes": "Coordinates extracted from LAS file LOC headers. Some wells have incomplete data - marked with estimated=true",
+  "seismic_3d_extent": {
+    "x_min": 325000,
+    "x_max": 377000,
+    "y_min": 1420000,
+    "y_max": 1460000,
+    "area_km2": 1955
+  },
+  "wells": {
+    "BULTE-1": {
+      "easting": 328244.86,
+      "northing": 1444202.14,
+      "elevation_kb_m": 296.63,
+      "source": "LAS LOC: N1444202.14M,E328244.86M",
+      "estimated": false,
+      "within_3d": true,
+      "seismic_tie": "3D",
+      "inline_approx": 5110,
+      "xline_approx": 5300
+    },
+    "HERWA-01": {
+      "easting": 370393.97,
+      "northing": 1444696.19,
+      "elevation_kb_m": 306.73,
+      "source": "LAS LOC: E 370393.97M, N 1444696.19M",
+      "estimated": false,
+      "within_3d": true,
+      "seismic_tie": "3D",
+      "inline_approx": 5930,
+      "xline_approx": 5320
+    },
+    "MASU-1": {
+      "easting": 314833.33,
+      "northing": 1434541.66,
+      "elevation_kb_m": 304.60,
+      "source": "LAS LOC: E: 314833.33 N: 34541.66 (Northing corrected - added 14 prefix)",
+      "estimated": true,
+      "within_3d": false,
+      "seismic_tie": "2D",
+      "notes": "Northing was truncated in LAS file. Well is west of 3D volume."
+    },
+    "KASADE-01": {
+      "easting": 333074.91,
+      "northing": 1429861.95,
+      "elevation_kb_m": 298.33,
+      "source": "LAS LOC: E33074.91M,N1429861.95M (Easting corrected - added 3 prefix)",
+      "estimated": true,
+      "within_3d": true,
+      "seismic_tie": "3D",
+      "inline_approx": 5200,
+      "xline_approx": 4940,
+      "notes": "Easting was truncated in LAS file. Position estimated."
+    },
+    "NGAMMAEAST-1": {
+      "easting": 205006.10,
+      "northing": 1371697.34,
+      "elevation_kb_m": 320.33,
+      "source": "LAS LOC: N 1371 697.34 E205 006.10",
+      "estimated": false,
+      "within_3d": false,
+      "seismic_tie": "2D",
+      "notes": "Well is southwest of 3D volume. Ties to 2D lines only."
+    },
+    "NGORNORTH-1": {
+      "easting": 240715.98,
+      "northing": 1372699.14,
+      "elevation_kb_m": 323.53,
+      "source": "LAS LOC: N 1,372 699.14M,E 240715.98M",
+      "estimated": false,
+      "within_3d": false,
+      "seismic_tie": "2D",
+      "notes": "Well is west-southwest of 3D volume. Ties to 2D lines only."
+    }
+  },
+  "summary": {
+    "total_wells": 6,
+    "within_3d": ["BULTE-1", "HERWA-01", "KASADE-01"],
+    "outside_3d": ["MASU-1", "NGAMMAEAST-1", "NGORNORTH-1"],
+    "estimated_coords": ["MASU-1", "KASADE-01"],
+    "reliable_coords": ["BULTE-1", "HERWA-01", "NGAMMAEAST-1", "NGORNORTH-1"]
+  },
+  "recommendations": [
+    "Verify MASU-1 and KASADE-01 coordinates from original well reports or survey data",
+    "Use BULTE-1 and HERWA-01 for 3D seismic-well ties (most reliable)",
+    "NGAMMAEAST-1 and NGORNORTH-1 should be tied to 2D seismic lines",
+    "Request corrected well header data from NNPC if available"
+  ]
+}

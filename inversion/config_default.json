@@ -1,7 +1,7 @@
 {
-  "seismic_file": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\3D\\3D Bornu Chad",
+  "seismic_file": "",
   "well_data_file": null,
-  "output_dir": "C:\\Users\\moses\\Documents\\PHD REVIEW\\outputs\\inversion",
+  "output_dir": "",
   "wells": {},
   "sample_rate": 0.004,
   "bin_size": [25.0, 25.0],
@@ -35,5 +35,6 @@
   "webhook_auth": null,
   "progress_interval": 10,
   "enable_cache": true,
-  "cache_dir": ".inversion_cache"
+  "cache_dir": ".inversion_cache",
+  "_note": "Paths should be configured via project_config.json or GUI"
 }
