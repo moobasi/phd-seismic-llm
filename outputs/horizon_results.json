@@ -1,0 +1,190 @@
+{
+  "success": true,
+  "horizons_tracked": 6,
+  "total_closures": 0,
+  "horizon_stats": {
+    "Horizon_A": {
+      "coverage": 11.730497966453022,
+      "iterations": 200000,
+      "time_min": 119.33451699440519,
+      "time_max": 1037.5481849609855,
+      "structural_relief": 918.2136679665803,
+      "diagnostics": {
+        "seeds_initialized": 903,
+        "rejected_similarity": 1139,
+        "rejected_dip": 0,
+        "rejected_coherence": 0,
+        "accepted": 249911
+      }
+    },
+    "Horizon_B": {
+      "coverage": 11.73213490629221,
+      "iterations": 200000,
+      "time_min": 653.8969737774412,
+      "time_max": 1764.3519568976449,
+      "structural_relief": 1110.4549831202037,
+      "diagnostics": {
+        "seeds_initialized": 903,
+        "rejected_similarity": 1122,
+        "rejected_dip": 0,
+        "rejected_coherence": 0,
+        "accepted": 249946
+      }
+    },
+    "Horizon_C": {
+      "coverage": 11.7321816760019,
+      "iterations": 200000,
+      "time_min": 1383.0940524327957,
+      "time_max": 2586.840478680205,
+      "structural_relief": 1203.746426247409,
+      "diagnostics": {
+        "seeds_initialized": 903,
+        "rejected_similarity": 1121,
+        "rejected_dip": 0,
+        "rejected_coherence": 0,
+        "accepted": 249947
+      }
+    },
+    "Horizon_D": {
+      "coverage": 11.7321816760019,
+      "iterations": 200000,
+      "time_min": 2283.0028356063262,
+      "time_max": 3323.3230138816607,
+      "structural_relief": 1040.3201782753345,
+      "diagnostics": {
+        "seeds_initialized": 903,
+        "rejected_similarity": 1117,
+        "rejected_dip": 0,
+        "rejected_coherence": 0,
+        "accepted": 249947
+      }
+    },
+    "Horizon_E": {
+      "coverage": 11.7321816760019,
+      "iterations": 200000,
+      "time_min": 2861.4862600155566,
+      "time_max": 4029.379715409723,
+      "structural_relief": 1167.8934553941663,
+      "diagnostics": {
+        "seeds_initialized": 903,
+        "rejected_similarity": 1115,
+        "rejected_dip": 0,
+        "rejected_coherence": 0,
+        "accepted": 249947
+      }
+    },
+    "Horizon_F": {
+      "coverage": 11.7321816760019,
+      "iterations": 200000,
+      "time_min": 3651.7162054320033,
+      "time_max": 4779.409063840447,
+      "structural_relief": 1127.6928584084435,
+      "diagnostics": {
+        "seeds_initialized": 903,
+        "rejected_similarity": 1115,
+        "rejected_dip": 0,
+        "rejected_coherence": 0,
+        "accepted": 249947
+      }
+    }
+  },
+  "closures": {
+    "Horizon_A": [],
+    "Horizon_B": [],
+    "Horizon_C": [],
+    "Horizon_D": [],
+    "Horizon_E": [],
+    "Horizon_F": []
+  },
+  "mean_coverage": 11.73189326279214,
+  "mean_iterations": 200000,
+  "tracking_quality": "Poor",
+  "output_files": [
+    "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\data\\Horizon_A_surface.npy",
+    "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\data\\Horizon_B_surface.npy",
+    "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\data\\Horizon_C_surface.npy",
+    "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\data\\Horizon_D_surface.npy",
+    "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\data\\Horizon_E_surface.npy",
+    "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\data\\Horizon_F_surface.npy"
+  ],
+  "processing_time_seconds": 4228.541719,
+  "timestamp": "2026-02-09T00:52:37.758390",
+  "config_used": {
+    "seismic_file": "C:\\Users\\moses\\OneDrive\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\3D\\3D Bornu Chad",
+    "coherence_file": null,
+    "dip_file": null,
+    "output_dir": "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs",
+    "formations": {
+      "Horizon_A": [
+        500,
+        400,
+        600,
+        "trough",
+        "#FFD700"
+      ],
+      "Horizon_B": [
+        1200,
+        1000,
+        1400,
+        "peak",
+        "#FF8C00"
+      ],
+      "Horizon_C": [
+        2000,
+        1800,
+        2200,
+        "peak",
+        "#8B0000"
+      ],
+      "Horizon_D": [
+        2800,
+        2600,
+        3000,
+        "trough",
+        "#006400"
+      ],
+      "Horizon_E": [
+        3500,
+        3300,
+        3700,
+        "peak",
+        "#0000CD"
+      ],
+      "Horizon_F": [
+        4200,
+        4000,
+        4400,
+        "peak",
+        "#8B008B"
+      ]
+    },
+    "wells": {},
+    "grid_density": 50,
+    "search_window": 30,
+    "similarity_threshold": 0.4,
+    "max_dip": 85,
+    "max_iterations": 200000,
+    "correlation_window": 9,
+    "use_8_connected": true,
+    "fault_guided": false,
+    "coherence_threshold": 0.15,
+    "avg_velocity": 2200.0,
+    "trace_spacing": 25.0,
+    "fill_small_gaps": true,
+    "max_gap_size": 5,
+    "smooth_sigma": 1.5,
+    "identify_closures": true,
+    "min_closure_amplitude": 100.0,
+    "min_closure_area": 50,
+    "contour_interval": 50.0,
+    "save_figures": true,
+    "figure_dpi": 300,
+    "export_horizons": true,
+    "export_format": "npy",
+    "webhook_url": null,
+    "webhook_auth": null,
+    "progress_interval": 10,
+    "enable_cache": true,
+    "cache_dir": ".horizon_cache"
+  }
+}

@@ -1,0 +1,272 @@
+{
+  "timestamp": "2026-02-11T05:55:42.894960",
+  "segy_file": "outputs/3D Bornu Chad_cleaned.segy",
+  "processing_time_seconds": 0.0,
+  "version": "5.0",
+  "survey": {
+    "total_traces": 1844191,
+    "samples_per_trace": 2001,
+    "sample_interval_ms": 4.0,
+    "record_length_ms": 8000.0,
+    "inline_range": [
+      5047,
+      6047
+    ],
+    "xline_range": [
+      4885,
+      7020
+    ],
+    "n_inlines": 1001,
+    "n_xlines": 2136,
+    "expected_traces": 2138136,
+    "completeness_pct": 86.3,
+    "cdp_x_range": [
+      323000.0,
+      379000.0
+    ],
+    "cdp_y_range": [
+      1430000.0,
+      1460000.0
+    ],
+    "survey_extent_x_m": 56200.0,
+    "survey_extent_y_m": 32400.0,
+    "survey_area_km2": 1821.0,
+    "bin_size_inline_m": 56.1,
+    "bin_size_xline_m": 15.2,
+    "nyquist_frequency_hz": 125.0,
+    "avg_velocity_ms": 2500.0,
+    "max_depth_m": 10000.0,
+    "data_size_gb": 13.7
+  },
+  "statistics": {
+    "n_samples": 9850923,
+    "mean": "-0.34",
+    "std_dev": "3699.0",
+    "variance": 13700000.0,
+    "rms": "3699.0",
+    "min": -27600.0,
+    "max": 28700.0,
+    "range": 56300.0,
+    "zero_pct": 1.14,
+    "skewness": 0.022,
+    "kurtosis": 0.193,
+    "normality": {
+      "anderson_darling_stat": 0.646,
+      "anderson_darling_critical_5pct": 0.752,
+      "shapiro_wilk_stat": 0.999,
+      "shapiro_wilk_p": 0.07057139614598625,
+      "is_normal": true
+    }
+  },
+  "quality": {
+    "traces_checked": 4923,
+    "dead_traces": {
+      "count": 0,
+      "pct": 0.0,
+      "extrapolated_total": 0
+    },
+    "clipped_traces": {
+      "count": 0,
+      "pct": 0.0
+    },
+    "low_snr_traces": {
+      "count": 0,
+      "pct": 0.0,
+      "threshold_db": 10
+    },
+    "snr_statistics": {
+      "mean_db": 15.2,
+      "median_db": 15.2,
+      "std_db": 0.446,
+      "min_db": 13.0,
+      "max_db": 16.5,
+      "method": "coherence-based (autocorrelation)"
+    },
+    "dead_trace_coordinates": []
+  },
+  "spectral": {
+    "peak_frequency_hz": 14.7,
+    "bandwidth_3db_hz": 10.5,
+    "f_low_3db_hz": 8.87,
+    "f_high_3db_hz": 19.4,
+    "bandwidth_6db_hz": 16.1,
+    "f_low_6db_hz": 7.87,
+    "f_high_6db_hz": 24.0,
+    "dominant_frequency": {
+      "mean_hz": 14.0,
+      "std_hz": 2.92,
+      "min_hz": 8.12,
+      "max_hz": 25.7
+    },
+    "time_variant": {
+      "shallow_peak_hz": 11.6,
+      "deep_peak_hz": 17.2,
+      "decay_pct": -48.4,
+      "anomalous": true,
+      "note": "Negative decay may indicate spectral balancing in processing"
+    },
+    "nyquist_hz": 125.0,
+    "traces_analyzed": 3000
+  },
+  "resolution": {
+    "vertical": {
+      "at_peak_freq_m": 42.4,
+      "best_case_m": 32.3,
+      "worst_case_m": 70.5,
+      "method": "lambda/4 criterion"
+    },
+    "lateral_fresnel": [
+      {
+        "depth_m": 1000,
+        "radius_m": 412.0,
+        "diameter_m": 824.0
+      },
+      {
+        "depth_m": 2000,
+        "radius_m": 582.0,
+        "diameter_m": 1165.0
+      },
+      {
+        "depth_m": 3000,
+        "radius_m": 713.0,
+        "diameter_m": 1427.0
+      },
+      {
+        "depth_m": 5000,
+        "radius_m": 921.0,
+        "diameter_m": 1842.0
+      }
+    ],
+    "comparison_to_assumptions": {
+      "assumed_frequency_hz": 25,
+      "assumed_resolution_m": 25.0,
+      "measured_frequency_hz": 14.7,
+      "measured_resolution_m": 42.4,
+      "factor_coarser": 0.59
+    },
+    "spatial_aliasing": {
+      "bin_size_m": 25,
+      "nyquist_freq_hz": 50.0,
+      "max_observed_freq_hz": 19.4,
+      "risk": "LOW"
+    },
+    "velocity_used_ms": 2500.0
+  },
+  "attributes": {
+    "rms_amplitude": {
+      "mean": 3722.0,
+      "std": 89.0,
+      "cv_pct": 2.39,
+      "min": 3467.0,
+      "max": 4504.0
+    },
+    "instantaneous_amplitude": {
+      "mean": 4564.0,
+      "std": 88.6,
+      "cv_pct": 1.94,
+      "min": 3946.0,
+      "max": 5240.0
+    },
+    "dominant_frequency": {
+      "mean": 14.0,
+      "std": 2.86,
+      "cv_pct": 20.4,
+      "min": 7.75,
+      "max": 25.6
+    },
+    "zero_crossing_rate": {
+      "mean": 0.134,
+      "std": 0.007,
+      "cv_pct": 5.26,
+      "min": 0.107,
+      "max": 0.167
+    },
+    "correlations": [
+      {
+        "pair": "RMS vs Frequency",
+        "r": -0.126,
+        "r2": 0.016,
+        "p_value": 1.5557982301750837e-36,
+        "ci_95": [
+          -0.145,
+          -0.107
+        ]
+      },
+      {
+        "pair": "RMS vs Instantaneous",
+        "r": 0.794,
+        "r2": 0.631,
+        "p_value": 0.0,
+        "ci_95": [
+          0.785,
+          0.803
+        ]
+      },
+      {
+        "pair": "Frequency vs ZCR",
+        "r": 0.417,
+        "r2": 0.174,
+        "p_value": 0.0,
+        "ci_95": [
+          0.397,
+          0.436
+        ]
+      }
+    ],
+    "traces_analyzed": 10000
+  },
+  "spatial": {
+    "quadrant_statistics": {
+      "NW": {
+        "rms_mean": 3738.0,
+        "freq_mean": 13.2,
+        "trace_count": 2713
+      },
+      "NE": {
+        "rms_mean": 3690.0,
+        "freq_mean": 13.9,
+        "trace_count": 2295
+      },
+      "SW": {
+        "rms_mean": 3722.0,
+        "freq_mean": 14.7,
+        "trace_count": 2282
+      },
+      "SE": {
+        "rms_mean": 3731.0,
+        "freq_mean": 14.4,
+        "trace_count": 2710
+      }
+    },
+    "anova": {
+      "rms": {
+        "f_statistic": 140.0,
+        "p_value": 0.0,
+        "significant": true
+      },
+      "frequency": {
+        "f_statistic": 139.0,
+        "p_value": 1.574916228425546e-88,
+        "significant": true
+      }
+    },
+    "interpretation": "Significant spatial variations detected"
+  },
+  "recommendations": [
+    "Account for 42.4m resolution limit in interpretation",
+    "Low frequency content (14.7 Hz) - typical of deep targets",
+    "Investigate spectral artifacts in time-variant analysis",
+    "Investigate spatial amplitude variations across survey",
+    "Integrate well control for velocity/impedance calibration",
+    "Consider multiple attributes for reservoir characterization"
+  ],
+  "warnings": [
+    "Spectral decay is anomalous - may indicate processing artifacts"
+  ],
+  "output_files": {
+    "figures": [
+      "outputs\\eda_results\\figures\\survey_overview.png",
+      "outputs\\eda_results\\figures\\quality_summary.png"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+# Large seismic data files
+*.segy
+*.sgy
+*.SEGY
+*.SGY
+
+# Cache files
+.eda_cache/
+.dead_trace_cache/
+.horizon_cache/
+*.pkl
+__pycache__/
+*.pyc
+
+# Large numpy arrays (optional - uncomment if too large)
+# *.npy
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

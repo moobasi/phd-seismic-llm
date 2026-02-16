@@ -1,0 +1,22 @@
+{
+  "segy_3d_path": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\3D\\3D Bornu Chad",
+  "segy_2d_directory": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\2D",
+  "line_inventory_csv": "C:\\Users\\moses\\Documents\\PHD REVIEW\\outputs\\2d_analysis\\line_inventory.csv",
+  "well_header_file": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\WellHeader\\location.xlsx",
+  "las_directory": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Logs\\ALL_WELL",
+  "velocity_model_path": "C:\\Users\\moses\\Documents\\PHD REVIEW\\outputs\\well_integration\\velocity_model.pkl",
+  "output_dir": "C:\\Users\\moses\\Documents\\PHD REVIEW\\outputs\\integration_2d3d",
+  "survey_3d_bounds": {
+    "xmin": 0,
+    "xmax": 0,
+    "ymin": 0,
+    "ymax": 0
+  },
+  "comparison_window_ms": 100.0,
+  "frequency_analysis_window_ms": 500.0,
+  "max_tie_distance_m": 100.0,
+  "velocity_comparison_depths": [1000, 1500, 2000, 2500, 3000, 3500, 4000],
+  "correlation_horizons": ["Chad_Top", "Fika_Top", "Gongila_Top", "Bima_Top"],
+  "save_figures": true,
+  "figure_dpi": 300
+}

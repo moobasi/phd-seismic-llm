@@ -1,0 +1,417 @@
+{
+  "success": true,
+  "horizons_analyzed": 3,
+  "attributes_extracted": 2,
+  "total_prospects": 0,
+  "mode": "fixed_slices",
+  "horizon_stats": {
+    "Horizon_A": {
+      "envelope": {
+        "mean": 5.792261745191873,
+        "std": 103.01544980256875,
+        "min": 0.0,
+        "max": 4298.59423828125,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+      },
+      "frequency": {
+        "mean": 0.053069813245489636,
+        "std": 0.9216175701446092,
+        "min": 0.0,
+        "max": 117.26311492919922,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+      }
+    },
+    "Horizon_B": {
+      "envelope": {
+        "mean": 5.649847212670171,
+        "std": 100.94358048757292,
+        "min": 0.0,
+        "max": 5645.7939453125,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+      },
+      "frequency": {
+        "mean": 0.04761092696568226,
+        "std": 0.8192696099253222,
+        "min": 0.0,
+        "max": 112.45709228515625,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+      }
+    },
+    "Horizon_C": {
+      "envelope": {
+        "mean": 5.81145714197621,
+        "std": 102.99714803703523,
+        "min": 0.0,
+        "max": 5093.0810546875,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+      },
+      "frequency": {
+        "mean": 0.0539809823366095,
+        "std": 0.910425600691099,
+        "min": 0.0,
+        "max": 114.57839965820312,
+        "p10": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+      }
+    }
+  },
+  "dhi_counts": {
+    "Horizon_A": {
+      "high_amplitude": 8549,
+      "low_frequency": 2137252
+    },
+    "Horizon_B": {
+      "high_amplitude": 8544,
+      "low_frequency": 2137358
+    },
+    "Horizon_C": {
+      "high_amplitude": 8567,
+      "low_frequency": 2137269
+    }
+  },
+  "prospects": {
+    "Horizon_A": [],
+    "Horizon_B": [],
+    "Horizon_C": []
+  },
+  "correlations": {
+    "Horizon_A": {
+      "envelope_vs_porosity": {
+        "r": NaN,
+        "p": NaN,
+        "significant": false
+      },
+      "frequency_vs_porosity": {
+        "r": NaN,
+        "p": NaN,
+        "significant": false
+      }
+    },
+    "Horizon_B": {
+      "envelope_vs_porosity": {
+        "r": NaN,
+        "p": NaN,
+        "significant": false
+      },
+      "frequency_vs_porosity": {
+        "r": NaN,
+        "p": NaN,
+        "significant": false
+      }
+    },
+    "Horizon_C": {
+      "envelope_vs_porosity": {
+        "r": NaN,
+        "p": NaN,
+        "significant": false
+      },
+      "frequency_vs_porosity": {
+        "r": NaN,
+        "p": NaN,
+        "significant": false
+      }
+    }
+  },
+  "well_attributes": {
+    "Horizon_A": [
+      {
+        "well": "Well-01",
+        "inline": 250,
+        "xline": 175,
+        "porosity": 21.3,
+        "Sh": 65.6,
+        "quality": "Excellent",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-02",
+        "inline": 180,
+        "xline": 145,
+        "porosity": 22.9,
+        "Sh": 62.3,
+        "quality": "Excellent",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-03",
+        "inline": 220,
+        "xline": 165,
+        "porosity": 20.4,
+        "Sh": 66.2,
+        "quality": "Good",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-04",
+        "inline": 160,
+        "xline": 120,
+        "porosity": 16.1,
+        "Sh": 65.2,
+        "quality": "Fair",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-05",
+        "inline": 240,
+        "xline": 180,
+        "porosity": 23.0,
+        "Sh": 66.5,
+        "quality": "Excellent",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-06",
+        "inline": 170,
+        "xline": 135,
+        "porosity": 18.4,
+        "Sh": 64.2,
+        "quality": "Good",
+        "envelope": 0.0,
+        "frequency": 0.0
+      }
+    ],
+    "Horizon_B": [
+      {
+        "well": "Well-01",
+        "inline": 250,
+        "xline": 175,
+        "porosity": 21.3,
+        "Sh": 65.6,
+        "quality": "Excellent",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-02",
+        "inline": 180,
+        "xline": 145,
+        "porosity": 22.9,
+        "Sh": 62.3,
+        "quality": "Excellent",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-03",
+        "inline": 220,
+        "xline": 165,
+        "porosity": 20.4,
+        "Sh": 66.2,
+        "quality": "Good",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-04",
+        "inline": 160,
+        "xline": 120,
+        "porosity": 16.1,
+        "Sh": 65.2,
+        "quality": "Fair",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-05",
+        "inline": 240,
+        "xline": 180,
+        "porosity": 23.0,
+        "Sh": 66.5,
+        "quality": "Excellent",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-06",
+        "inline": 170,
+        "xline": 135,
+        "porosity": 18.4,
+        "Sh": 64.2,
+        "quality": "Good",
+        "envelope": 0.0,
+        "frequency": 0.0
+      }
+    ],
+    "Horizon_C": [
+      {
+        "well": "Well-01",
+        "inline": 250,
+        "xline": 175,
+        "porosity": 21.3,
+        "Sh": 65.6,
+        "quality": "Excellent",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-02",
+        "inline": 180,
+        "xline": 145,
+        "porosity": 22.9,
+        "Sh": 62.3,
+        "quality": "Excellent",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-03",
+        "inline": 220,
+        "xline": 165,
+        "porosity": 20.4,
+        "Sh": 66.2,
+        "quality": "Good",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-04",
+        "inline": 160,
+        "xline": 120,
+        "porosity": 16.1,
+        "Sh": 65.2,
+        "quality": "Fair",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-05",
+        "inline": 240,
+        "xline": 180,
+        "porosity": 23.0,
+        "Sh": 66.5,
+        "quality": "Excellent",
+        "envelope": 0.0,
+        "frequency": 0.0
+      },
+      {
+        "well": "Well-06",
+        "inline": 170,
+        "xline": 135,
+        "porosity": 18.4,
+        "Sh": 64.2,
+        "quality": "Good",
+        "envelope": 0.0,
+        "frequency": 0.0
+      }
+    ]
+  },
+  "output_files": [
+    "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\statistics.json",
+    "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\correlations.json",
+    "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\analysis_report.txt"
+  ],
+  "processing_time_seconds": 42.599372,
+  "memory_used_mb": 51.298656,
+  "timestamp": "2026-02-09T02:39:51.655475",
+  "config_used": {
+    "base_dir": "C:\\Users\\moses\\OneDrive\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\3D\\3D Bornu Chad",
+    "output_dir": "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs",
+    "attribute_files": {
+      "envelope": "temp_envelope.dat",
+      "frequency": "temp_frequency.dat",
+      "phase": "temp_phase.dat",
+      "sweetness": "temp_sweetness.dat",
+      "semblance": "temp_semblance.dat",
+      "structure": "temp_structure.dat",
+      "dip": "temp_dip.dat",
+      "azimuth": "temp_azimuth.dat"
+    },
+    "horizon_files": {},
+    "fixed_time_slices": {
+      "Horizon_A": 2000,
+      "Horizon_B": 2800,
+      "Horizon_C": 3500
+    },
+    "wells": [
+      {
+        "name": "Well-01",
+        "inline": 250,
+        "xline": 175,
+        "porosity": 21.3,
+        "Sh": 65.6,
+        "quality": "Excellent"
+      },
+      {
+        "name": "Well-02",
+        "inline": 180,
+        "xline": 145,
+        "porosity": 22.9,
+        "Sh": 62.3,
+        "quality": "Excellent"
+      },
+      {
+        "name": "Well-03",
+        "inline": 220,
+        "xline": 165,
+        "porosity": 20.4,
+        "Sh": 66.2,
+        "quality": "Good"
+      },
+      {
+        "name": "Well-04",
+        "inline": 160,
+        "xline": 120,
+        "porosity": 16.1,
+        "Sh": 65.2,
+        "quality": "Fair"
+      },
+      {
+        "name": "Well-05",
+        "inline": 240,
+        "xline": 180,
+        "porosity": 23.0,
+        "Sh": 66.5,
+        "quality": "Excellent"
+      },
+      {
+        "name": "Well-06",
+        "inline": 170,
+        "xline": 135,
+        "porosity": 18.4,
+        "Sh": 64.2,
+        "quality": "Good"
+      }
+    ],
+    "dhi_thresholds": {
+      "amplitude_high": 1.2,
+      "frequency_low": 25.0,
+      "sweetness_high": 0.3,
+      "phase_anomaly": 20.0
+    },
+    "min_prospect_area": 25,
+    "min_dhi_criteria": 3,
+    "n_inlines": 0,
+    "n_xlines": 0,
+    "n_samples": 0,
+    "sample_rate": 4.0,
+    "save_figures": true,
+    "figure_dpi": 300,
+    "export_csv": true,
+    "export_json": true,
+    "webhook_url": null,
+    "webhook_auth": null,
+    "progress_interval": 10,
+    "enable_cache": true,
+    "cache_dir": ".attribute_cache",
+    "use_gpu": true,
+    "gpu_device_id": 0,
+    "gpu_memory_limit_gb": 0.0,
+    "gpu_batch_size": 1000
+  }
+}

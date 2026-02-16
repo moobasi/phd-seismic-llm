@@ -1,0 +1,675 @@
+{
+  "timestamp": "2026-02-09T10:02:46.857124",
+  "segy_file": "C:\\Users\\moses\\OneDrive\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\3D\\3D Bornu Chad",
+  "processing_time_seconds": 0.0,
+  "version": "5.0",
+  "survey": {
+    "total_traces": 2138136,
+    "samples_per_trace": 2001,
+    "sample_interval_ms": 4.0,
+    "record_length_ms": 8000.0,
+    "inline_range": [
+      5047,
+      6047
+    ],
+    "xline_range": [
+      4885,
+      7020
+    ],
+    "n_inlines": 1001,
+    "n_xlines": 2136,
+    "expected_traces": 2138136,
+    "completeness_pct": 100.0,
+    "cdp_x_range": [
+      325000.0,
+      377000.0
+    ],
+    "cdp_y_range": [
+      1420000.0,
+      1460000.0
+    ],
+    "survey_extent_x_m": 51500.0,
+    "survey_extent_y_m": 38000.0,
+    "survey_area_km2": 1955.0,
+    "bin_size_inline_m": 51.4,
+    "bin_size_xline_m": 17.8,
+    "nyquist_frequency_hz": 125.0,
+    "avg_velocity_ms": 2500.0,
+    "max_depth_m": 10000.0,
+    "data_size_gb": 15.9
+  },
+  "statistics": {
+    "n_samples": 9942969,
+    "mean": "-0.29",
+    "std_dev": "3423.0",
+    "variance": 11700000.0,
+    "rms": "3423.0",
+    "min": -27400.0,
+    "max": 28800.0,
+    "range": 56200.0,
+    "zero_pct": 15.4,
+    "skewness": 0.0,
+    "kurtosis": 0.0,
+    "normality": {
+      "anderson_darling_stat": 0.0,
+      "anderson_darling_critical_5pct": 0.786,
+      "shapiro_wilk_stat": 1.0,
+      "shapiro_wilk_p": 1.0,
+      "is_normal": true
+    }
+  },
+  "quality": {
+    "traces_checked": 4969,
+    "dead_traces": {
+      "count": 717,
+      "pct": 14.4,
+      "extrapolated_total": 308521
+    },
+    "clipped_traces": {
+      "count": 0,
+      "pct": 0.0
+    },
+    "low_snr_traces": {
+      "count": 0,
+      "pct": 0.0,
+      "threshold_db": 10
+    },
+    "snr_statistics": {
+      "mean_db": 15.2,
+      "median_db": 15.2,
+      "std_db": 0.441,
+      "min_db": 12.8,
+      "max_db": 16.6,
+      "method": "coherence-based (autocorrelation)"
+    },
+    "dead_trace_coordinates": [
+      [
+        5115,
+        4986
+      ],
+      [
+        5085,
+        4929
+      ],
+      [
+        5090,
+        5060
+      ],
+      [
+        5088,
+        5080
+      ],
+      [
+        5133,
+        5063
+      ],
+      [
+        5067,
+        4918
+      ],
+      [
+        5053,
+        5041
+      ],
+      [
+        5125,
+        4952
+      ],
+      [
+        5087,
+        4896
+      ],
+      [
+        5120,
+        4985
+      ],
+      [
+        5074,
+        4991
+      ],
+      [
+        5098,
+        4985
+      ],
+      [
+        5139,
+        4892
+      ],
+      [
+        5146,
+        5088
+      ],
+      [
+        5145,
+        4950
+      ],
+      [
+        5067,
+        5042
+      ],
+      [
+        5059,
+        4950
+      ],
+      [
+        5084,
+        4984
+      ],
+      [
+        5048,
+        5068
+      ],
+      [
+        5141,
+        5064
+      ],
+      [
+        5098,
+        4902
+      ],
+      [
+        5141,
+        4931
+      ],
+      [
+        5119,
+        5002
+      ],
+      [
+        5135,
+        5045
+      ],
+      [
+        5075,
+        5036
+      ],
+      [
+        5092,
+        4992
+      ],
+      [
+        5097,
+        4910
+      ],
+      [
+        5127,
+        5075
+      ],
+      [
+        5051,
+        4900
+      ],
+      [
+        5056,
+        4914
+      ],
+      [
+        5083,
+        4917
+      ],
+      [
+        5067,
+        5041
+      ],
+      [
+        5108,
+        5014
+      ],
+      [
+        5090,
+        5054
+      ],
+      [
+        5076,
+        5005
+      ],
+      [
+        5135,
+        5001
+      ],
+      [
+        5094,
+        4950
+      ],
+      [
+        5062,
+        5024
+      ],
+      [
+        5079,
+        4905
+      ],
+      [
+        5077,
+        4923
+      ],
+      [
+        5113,
+        4965
+      ],
+      [
+        5056,
+        5080
+      ],
+      [
+        5049,
+        4941
+      ],
+      [
+        5129,
+        5050
+      ],
+      [
+        5117,
+        5088
+      ],
+      [
+        5079,
+        4984
+      ],
+      [
+        5115,
+        4984
+      ],
+      [
+        5108,
+        4916
+      ],
+      [
+        5133,
+        5073
+      ],
+      [
+        5125,
+        4982
+      ],
+      [
+        5094,
+        4919
+      ],
+      [
+        5113,
+        4915
+      ],
+      [
+        5120,
+        4979
+      ],
+      [
+        5084,
+        5183
+      ],
+      [
+        5051,
+        5205
+      ],
+      [
+        5084,
+        5127
+      ],
+      [
+        5082,
+        5214
+      ],
+      [
+        5086,
+        5115
+      ],
+      [
+        5066,
+        5108
+      ],
+      [
+        5054,
+        5221
+      ],
+      [
+        5144,
+        5205
+      ],
+      [
+        5092,
+        5167
+      ],
+      [
+        5106,
+        5226
+      ],
+      [
+        5114,
+        5102
+      ],
+      [
+        5075,
+        5119
+      ],
+      [
+        5098,
+        5105
+      ],
+      [
+        5061,
+        5297
+      ],
+      [
+        5133,
+        5146
+      ],
+      [
+        5093,
+        5115
+      ],
+      [
+        5099,
+        5309
+      ],
+      [
+        5143,
+        5189
+      ],
+      [
+        5093,
+        5118
+      ],
+      [
+        5067,
+        5299
+      ],
+      [
+        5095,
+        5234
+      ],
+      [
+        5126,
+        5284
+      ],
+      [
+        5122,
+        5270
+      ],
+      [
+        5128,
+        5283
+      ],
+      [
+        5091,
+        5121
+      ],
+      [
+        5071,
+        5238
+      ],
+      [
+        5085,
+        5115
+      ],
+      [
+        5141,
+        5107
+      ],
+      [
+        5047,
+        5130
+      ],
+      [
+        5103,
+        5249
+      ],
+      [
+        5047,
+        5173
+      ],
+      [
+        5048,
+        5257
+      ],
+      [
+        5120,
+        5177
+      ],
+      [
+        5116,
+        5230
+      ],
+      [
+        5146,
+        5189
+      ],
+      [
+        5059,
+        5170
+      ],
+      [
+        5102,
+        5118
+      ],
+      [
+        5117,
+        5217
+      ],
+      [
+        5122,
+        5222
+      ],
+      [
+        5118,
+        5154
+      ],
+      [
+        5073,
+        5139
+      ],
+      [
+        5083,
+        5258
+      ],
+      [
+        5062,
+        5109
+      ],
+      [
+        5052,
+        5156
+      ],
+      [
+        5055,
+        5287
+      ],
+      [
+        5091,
+        5125
+      ],
+      [
+        5123,
+        5293
+      ]
+    ]
+  },
+  "spectral": {
+    "peak_frequency_hz": 14.5,
+    "bandwidth_3db_hz": 10.4,
+    "f_low_3db_hz": 8.87,
+    "f_high_3db_hz": 19.2,
+    "bandwidth_6db_hz": 16.0,
+    "f_low_6db_hz": 7.87,
+    "f_high_6db_hz": 23.9,
+    "dominant_frequency": {
+      "mean_hz": 12.2,
+      "std_hz": 5.35,
+      "min_hz": 0.125,
+      "max_hz": 26.7
+    },
+    "time_variant": {
+      "shallow_peak_hz": 11.6,
+      "deep_peak_hz": 16.9,
+      "decay_pct": -45.2,
+      "anomalous": true,
+      "note": "Negative decay may indicate spectral balancing in processing"
+    },
+    "nyquist_hz": 125.0,
+    "traces_analyzed": 3000
+  },
+  "resolution": {
+    "vertical": {
+      "at_peak_freq_m": 43.1,
+      "best_case_m": 32.5,
+      "worst_case_m": 70.5,
+      "method": "lambda/4 criterion"
+    },
+    "lateral_fresnel": [
+      {
+        "depth_m": 1000,
+        "radius_m": 415.0,
+        "diameter_m": 831.0
+      },
+      {
+        "depth_m": 2000,
+        "radius_m": 587.0,
+        "diameter_m": 1175.0
+      },
+      {
+        "depth_m": 3000,
+        "radius_m": 719.0,
+        "diameter_m": 1439.0
+      },
+      {
+        "depth_m": 5000,
+        "radius_m": 929.0,
+        "diameter_m": 1857.0
+      }
+    ],
+    "comparison_to_assumptions": {
+      "assumed_frequency_hz": 25,
+      "assumed_resolution_m": 25.0,
+      "measured_frequency_hz": 14.5,
+      "measured_resolution_m": 43.1,
+      "factor_coarser": 0.58
+    },
+    "spatial_aliasing": {
+      "bin_size_m": 25,
+      "nyquist_freq_hz": 50.0,
+      "max_observed_freq_hz": 19.2,
+      "risk": "LOW"
+    },
+    "velocity_used_ms": 2500.0
+  },
+  "attributes": {
+    "rms_amplitude": {
+      "mean": 3215.0,
+      "std": 1277.0,
+      "cv_pct": 39.7,
+      "min": 0.0,
+      "max": 4390.0
+    },
+    "instantaneous_amplitude": {
+      "mean": 3943.0,
+      "std": 1565.0,
+      "cv_pct": 39.7,
+      "min": 0.0,
+      "max": 5016.0
+    },
+    "dominant_frequency": {
+      "mean": 12.1,
+      "std": 5.46,
+      "cv_pct": 45.0,
+      "min": 0.125,
+      "max": 25.7
+    },
+    "zero_crossing_rate": {
+      "mean": 0.115,
+      "std": 0.046,
+      "cv_pct": 40.0,
+      "min": 0.0,
+      "max": 0.167
+    },
+    "correlations": [
+      {
+        "pair": "RMS vs Frequency",
+        "r": 0.867,
+        "r2": 0.751,
+        "p_value": 0.0,
+        "ci_95": [
+          0.86,
+          0.873
+        ]
+      },
+      {
+        "pair": "RMS vs Instantaneous",
+        "r": 0.999,
+        "r2": 0.998,
+        "p_value": 0.0,
+        "ci_95": [
+          0.999,
+          0.999
+        ]
+      },
+      {
+        "pair": "Frequency vs ZCR",
+        "r": 0.891,
+        "r2": 0.794,
+        "p_value": 0.0,
+        "ci_95": [
+          0.886,
+          0.896
+        ]
+      }
+    ],
+    "traces_analyzed": 10000
+  },
+  "spatial": {
+    "quadrant_statistics": {
+      "NW": {
+        "rms_mean": 3677.0,
+        "freq_mean": 12.8,
+        "trace_count": 2481
+      },
+      "NE": {
+        "rms_mean": 3618.0,
+        "freq_mean": 13.7,
+        "trace_count": 2519
+      },
+      "SW": {
+        "rms_mean": 2239.0,
+        "freq_mean": 9.02,
+        "trace_count": 2516
+      },
+      "SE": {
+        "rms_mean": 3336.0,
+        "freq_mean": 13.0,
+        "trace_count": 2484
+      }
+    },
+    "anova": {
+      "rms": {
+        "f_statistic": 868.0,
+        "p_value": 0.0,
+        "significant": true
+      },
+      "frequency": {
+        "f_statistic": 424.0,
+        "p_value": 3.655547446555441e-259,
+        "significant": true
+      }
+    },
+    "interpretation": "Significant spatial variations detected"
+  },
+  "recommendations": [
+    "Address dead traces (14.4%) - consider interpolation or reprocessing",
+    "Account for 43.1m resolution limit in interpretation",
+    "Low frequency content (14.5 Hz) - typical of deep targets",
+    "Investigate spectral artifacts in time-variant analysis",
+    "Investigate spatial amplitude variations across survey",
+    "Integrate well control for velocity/impedance calibration",
+    "Consider multiple attributes for reservoir characterization"
+  ],
+  "warnings": [
+    "High dead trace percentage: 14.4%",
+    "Spectral decay is anomalous - may indicate processing artifacts"
+  ],
+  "output_files": {
+    "figures": [
+      "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\figures\\survey_overview.png",
+      "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\figures\\quality_summary.png"
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "study_area": "Study Area 1",
+  "input_segy": "\"C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\3D\\3D Bornu Chad\"",
+  "output_dir": "C:\\Users\\moses\\Documents\\PHD REVIEW\\outputs",
+  "well_data": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Logs\\ALL_WELL",
+  "use_gpu": true,
+  "save_figures": true,
+  "verbose": true,
+  "last_step_completed": 0,
+  "input_segy_3d": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\3D\\3D Bornu Chad",
+  "input_2d_directory": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\2D",
+  "well_header": "C:\\Users\\moses\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\WellHeader\\location.xlsx",
+  "data_assessment": {
+    "3d_processing_state": "stacked_binned",
+    "3d_dead_traces_pct": 21.8,
+    "3d_dominant_freq_hz": 12.0,
+    "3d_bandwidth_hz": 9.0,
+    "3d_estimated_resolution_m": 63,
+    "2d_processing_state": "STK_and_MIG_available",
+    "2d_total_lines": 62,
+    "2d_usable_lines": 51,
+    "2d_mig_lines": 6,
+    "2d_stk_lines": 56,
+    "2d_dominant_freq_hz": 18.0,
+    "2d_bandwidth_hz": 10.2,
+    "2d_estimated_resolution_m": 42,
+    "2d_sample_interval_ms": 4.0,
+    "2d_record_length_s": 6.0,
+    "frequency_note": "2D has higher frequency than 3D - better vertical resolution",
+    "integration_consideration": "Frequency matching required for 2D-3D comparison",
+    "assessment_date": "2026-02-09"
+  }
+}

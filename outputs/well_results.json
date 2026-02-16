@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-02-09T00:52:25.248470",
+  "version": "5.0",
+  "processing_time_seconds": 0.026758,
+  "las_directory": "C:\\Users\\moses\\OneDrive\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\3D\\3D Bornu Chad",
+  "basin": "Study Area",
+  "quality_assessment": {},
+  "tier_summary": {},
+  "wells_processed": [],
+  "wells_failed": [],
+  "petrophysical_summary": {},
+  "velocity_model": {},
+  "reservoir_summary": [],
+  "quality": {},
+  "recommendations": [],
+  "warnings": [],
+  "output_files": {
+    "figures": "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\figures",
+    "data": "C:\\Users\\moses\\OneDrive\\Documents\\PHD REVIEW\\outputs\\data"
+  }
+}

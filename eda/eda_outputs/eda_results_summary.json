@@ -1,0 +1,86 @@
+{
+    "timestamp": "2026-02-08T01:40:44.993468",
+    "segy_file": "C:\\Users\\moses\\OneDrive\\Documents\\PHD DATA\\2D Bornu Chad\\PhD\\Seismic\\3D\\3D Bornu Chad",
+    "processing_time_seconds": 0.0,
+    "version": "5.0",
+    "survey": {
+        "total_traces": 2138136,
+        "samples_per_trace": 2001,
+        "sample_interval_ms": 4.0,
+        "record_length_ms": 8000.0,
+        "inline_range": [
+            5047,
+            6047
+        ],
+        "xline_range": [
+            4885,
+            7020
+        ],
+        "n_inlines": 1001,
+        "n_xlines": 2136,
+        "expected_traces": 2138136,
+        "completeness_pct": 100.0,
+        "cdp_x_range": [
+            325000.0,
+            377000.0
+        ],
+        "cdp_y_range": [
+            1420000.0,
+            1460000.0
+        ],
+        "survey_extent_x_m": 51500.0,
+        "survey_extent_y_m": 38000.0,
+        "survey_area_km2": 1955.0,
+        "bin_size_inline_m": 51.4,
+        "bin_size_xline_m": 17.8,
+        "nyquist_frequency_hz": 125.0,
+        "avg_velocity_ms": 2500.0,
+        "max_depth_m": 10000.0,
+        "data_size_gb": 15.9
+    },
+    "statistics": {
+        "n_samples": 9928962,
+        "mean": "-0.298",
+        "std_dev": "3430.0",
+        "variance": 11800000.0,
+        "rms": "3430.0",
+        "min": -23100.0,
+        "max": 25000.0,
+        "range": 48100.0,
+        "zero_pct": 15.1,
+        "skewness": 0.0,
+        "kurtosis": 0.0,
+        "normality": {
+            "anderson_darling_stat": 0.0,
+            "anderson_darling_critical_5pct": 0.752,
+            "shapiro_wilk_stat": 1.0,
+            "shapiro_wilk_p": 1.0,
+            "is_normal": true
+        }
+    },
+    "quality": {
+        "traces_checked": 4962,
+        "dead_traces": {
+            "count": 698,
+            "pct": 14.1,
+            "extrapolated_total": 300769
+        },
+        "clipped_traces": {
+            "count": 0,
+            "pct": 0.0
+        },
+        "low_snr_traces": {
+            "count": 0,
+            "pct": 0.0,
+            "threshold_db": 10
+        },
+        "snr_statistics": {
+            "mean_db": 15.2,
+            "median_db": 15.2,
+            "std_db": 0.441,
+            "min_db": 12.8,
+            "max_db": 16.6,
+            "method": "coherence-based (autocorrelation)"
+        }
+    }
+}

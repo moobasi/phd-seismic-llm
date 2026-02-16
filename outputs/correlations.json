@@ -1,0 +1,38 @@
+{
+  "Horizon_A": {
+    "envelope_vs_porosity": {
+      "r": NaN,
+      "p": NaN,
+      "significant": false
+    },
+    "frequency_vs_porosity": {
+      "r": NaN,
+      "p": NaN,
+      "significant": false
+    }
+  },
+  "Horizon_B": {
+    "envelope_vs_porosity": {
+      "r": NaN,
+      "p": NaN,
+      "significant": false
+    },
+    "frequency_vs_porosity": {
+      "r": NaN,
+      "p": NaN,
+      "significant": false
+    }
+  },
+  "Horizon_C": {
+    "envelope_vs_porosity": {
+      "r": NaN,
+      "p": NaN,
+      "significant": false
+    },
+    "frequency_vs_porosity": {
+      "r": NaN,
+      "p": NaN,
+      "significant": false
+    }
+  }
+}

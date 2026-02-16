@@ -1,0 +1,78 @@
+{
+  "base_dir": "C:\\Users\\moses\\Documents\\PHD REVIEW\\outputs\\eda",
+  "output_dir": "C:\\Users\\moses\\Documents\\PHD REVIEW\\outputs\\attributes",
+  "attribute_files": {},
+  "horizon_files": {},
+  "fixed_time_slices": {
+    "Top_Fika_Shale": 2000,
+    "Top_Gongila": 2800,
+    "Top_Bima": 3500
+  },
+  "wells": [
+    {
+      "name": "HERWA-01",
+      "inline": 250,
+      "xline": 175,
+      "porosity": 21.3,
+      "Sh": 65.6,
+      "quality": "Excellent"
+    },
+    {
+      "name": "MASU-1",
+      "inline": 180,
+      "xline": 145,
+      "porosity": 22.9,
+      "Sh": 62.3,
+      "quality": "Excellent"
+    },
+    {
+      "name": "KASADE-01",
+      "inline": 220,
+      "xline": 165,
+      "porosity": 20.4,
+      "Sh": 66.2,
+      "quality": "Good"
+    },
+    {
+      "name": "NGAMMA-EAST-1",
+      "inline": 160,
+      "xline": 120,
+      "porosity": 16.1,
+      "Sh": 65.2,
+      "quality": "Fair"
+    },
+    {
+      "name": "BULTE-1",
+      "inline": 240,
+      "xline": 180,
+      "porosity": 23.0,
+      "Sh": 66.5,
+      "quality": "Excellent"
+    }
+  ],
+  "dhi_thresholds": {
+    "amplitude_high": 1.2,
+    "frequency_low": 25.0,
+    "sweetness_high": 0.3,
+    "phase_anomaly": 20.0
+  },
+  "min_prospect_area": 25,
+  "min_dhi_criteria": 3,
+  "n_inlines": 0,
+  "n_xlines": 0,
+  "n_samples": 0,
+  "sample_rate": 4.0,
+  "save_figures": true,
+  "figure_dpi": 300,
+  "export_csv": true,
+  "export_json": true,
+  "webhook_url": null,
+  "webhook_auth": null,
+  "progress_interval": 10,
+  "enable_cache": true,
+  "cache_dir": ".attribute_cache",
+  "use_gpu": true,
+  "gpu_device_id": 0,
+  "gpu_memory_limit_gb": 0.0,
+  "gpu_batch_size": 1000
+}
