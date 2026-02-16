@@ -169,6 +169,87 @@ class UNet3DBlock(nn.Module):
         return x
 
 
+class FaultSeg3DNetOriginal(nn.Module):
+    """
+    Exact replica of the original FaultSeg3D Keras model architecture.
+
+    This matches the pre-trained weights from Wu et al. (2019).
+    Layer names match the Keras model for direct weight loading.
+    """
+
+    def __init__(self):
+        super().__init__()
+
+        # Encoder - exactly matching Keras layer names
+        self.conv3d_1 = nn.Conv3d(1, 16, kernel_size=3, padding=1)
+        self.conv3d_2 = nn.Conv3d(16, 16, kernel_size=3, padding=1)
+
+        self.conv3d_3 = nn.Conv3d(16, 32, kernel_size=3, padding=1)
+        self.conv3d_4 = nn.Conv3d(32, 32, kernel_size=3, padding=1)
+
+        self.conv3d_5 = nn.Conv3d(32, 64, kernel_size=3, padding=1)
+        self.conv3d_6 = nn.Conv3d(64, 64, kernel_size=3, padding=1)
+
+        # Bottleneck
+        self.conv3d_7 = nn.Conv3d(64, 512, kernel_size=3, padding=1)
+        self.conv3d_8 = nn.Conv3d(512, 512, kernel_size=3, padding=1)
+
+        # Decoder with skip connections
+        self.conv3d_9 = nn.Conv3d(576, 64, kernel_size=3, padding=1)   # 512 + 64 skip
+        self.conv3d_10 = nn.Conv3d(64, 64, kernel_size=3, padding=1)
+
+        self.conv3d_11 = nn.Conv3d(96, 32, kernel_size=3, padding=1)   # 64 + 32 skip
+        self.conv3d_12 = nn.Conv3d(32, 32, kernel_size=3, padding=1)
+
+        self.conv3d_13 = nn.Conv3d(48, 16, kernel_size=3, padding=1)   # 32 + 16 skip
+        self.conv3d_14 = nn.Conv3d(16, 16, kernel_size=3, padding=1)
+
+        # Output
+        self.conv3d_15 = nn.Conv3d(16, 1, kernel_size=1)
+
+        self.pool = nn.MaxPool3d(kernel_size=2, stride=2)
+        self.relu = nn.ReLU(inplace=True)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        # Encoder
+        e1 = self.relu(self.conv3d_1(x))
+        e1 = self.relu(self.conv3d_2(e1))
+
+        e2 = self.pool(e1)
+        e2 = self.relu(self.conv3d_3(e2))
+        e2 = self.relu(self.conv3d_4(e2))
+
+        e3 = self.pool(e2)
+        e3 = self.relu(self.conv3d_5(e3))
+        e3 = self.relu(self.conv3d_6(e3))
+
+        # Bottleneck
+        b = self.pool(e3)
+        b = self.relu(self.conv3d_7(b))
+        b = self.relu(self.conv3d_8(b))
+
+        # Decoder with skip connections
+        d3 = F.interpolate(b, size=e3.shape[2:], mode='trilinear', align_corners=True)
+        d3 = torch.cat([d3, e3], dim=1)  # 512 + 64 = 576
+        d3 = self.relu(self.conv3d_9(d3))
+        d3 = self.relu(self.conv3d_10(d3))
+
+        d2 = F.interpolate(d3, size=e2.shape[2:], mode='trilinear', align_corners=True)
+        d2 = torch.cat([d2, e2], dim=1)  # 64 + 32 = 96
+        d2 = self.relu(self.conv3d_11(d2))
+        d2 = self.relu(self.conv3d_12(d2))
+
+        d1 = F.interpolate(d2, size=e1.shape[2:], mode='trilinear', align_corners=True)
+        d1 = torch.cat([d1, e1], dim=1)  # 32 + 16 = 48
+        d1 = self.relu(self.conv3d_13(d1))
+        d1 = self.relu(self.conv3d_14(d1))
+
+        # Output
+        out = self.sigmoid(self.conv3d_15(d1))
+        return out
+
+
 class FaultSeg3DNet(nn.Module):
     """
     FaultSeg3D-style 3D U-Net for fault segmentation.
@@ -276,19 +357,27 @@ class FaultDetector:
 
         path = model_path or self.config.model_path
 
+        # Default to pre-trained FaultSeg3D weights if no path specified
+        if path is None:
+            default_path = Path(__file__).parent / "models" / "faultseg3d" / "faultseg3d_pytorch.pth"
+            if default_path.exists():
+                path = str(default_path)
+
         if path and Path(path).exists():
             try:
-                self.model = FaultSeg3DNet()
+                # Use FaultSeg3DNetOriginal for pre-trained weights (matches Keras architecture)
+                self.model = FaultSeg3DNetOriginal()
                 self.model.load_state_dict(torch.load(path, map_location=self.device))
                 self.model.to(self.device)
                 self.model.eval()
-                print(f"Loaded model from: {path}")
+                print(f"Loaded pre-trained FaultSeg3D model from: {path}")
                 return True
             except Exception as e:
-                print(f"Error loading model: {e}")
+                print(f"Error loading pre-trained model: {e}")
+                print("Falling back to randomly initialized model...")
 
         # Initialize with random weights if no pre-trained model
-        print("Initializing model with random weights (no pre-trained model)")
+        print("Initializing model with random weights (no pre-trained model found)")
         self.model = FaultSeg3DNet()
         self.model.to(self.device)
         self.model.eval()

@@ -167,16 +167,46 @@ dl_interpretation/
 
 ## Pre-trained Models
 
-For production use, download pre-trained models:
+### Included Models (Ready to Use)
+The FaultSeg3D pre-trained weights are included and automatically loaded:
 
-1. **FaultSeg3D weights**: [GitHub - xinwucwp/faultSeg](https://github.com/xinwucwp/faultSeg)
-2. **DeepSeismic weights**: [GitHub - microsoft/seismic-deeplearning](https://github.com/microsoft/seismic-deeplearning)
-3. **CNN-for-ASI weights**: Contact authors (Waldeland et al.)
-
-Place model files in `models/` directory and update config:
-```python
-config.model_path = "models/faultseg3d_weights.pth"
 ```
+models/
+├── faultseg3d/
+│   ├── faultseg3d_pytorch.pth    # Converted PyTorch weights (auto-loaded)
+│   ├── pretrained_model.hdf5     # Original Keras weights
+│   └── fseg-*.hdf5               # Training checkpoints
+├── model_config.json             # Model configuration
+└── convert_weights.py            # Keras to PyTorch converter
+```
+
+The `FaultDetector` automatically loads pre-trained weights - no configuration needed:
+```python
+detector = FaultDetector(config)  # Weights loaded automatically
+```
+
+### Download Additional Data (Optional)
+To download benchmark datasets for testing/validation:
+```bash
+pip install gdown
+# FaultSeg3D models (already included)
+gdown --folder "https://drive.google.com/drive/folders/1q8sAoLJgbhYHRubzyqMi9KkTeZWXWtNd" -O models/faultseg3d/
+
+# F3 Netherlands seismic (1.3 GB)
+gdown --folder "https://drive.google.com/drive/folders/0B7brcf-eGK8CbGhBdmZoUnhiTWs" -O data/f3_netherlands/
+
+# Dutch F3 Facies labels (1 GB)
+curl -L -o data/dutch_f3_facies.zip "https://zenodo.org/record/3755060/files/data.zip"
+```
+
+## Required Inputs
+
+| Input | Format | Required |
+|-------|--------|----------|
+| 3D Seismic | SEGY | Yes |
+| 2D Seismic | SEGY | Optional |
+| Well Headers | JSON/CSV | Optional |
+| Well Logs | LAS | Optional |
 
 ## References
 

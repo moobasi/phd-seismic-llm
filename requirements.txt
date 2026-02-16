@@ -31,6 +31,10 @@ torchvision>=0.15.0
 tqdm>=4.60.0
 rich>=12.0.0
 
+# Model weight handling
+h5py>=3.0.0             # For loading Keras HDF5 models
+gdown>=4.0.0            # For downloading from Google Drive
+
 # Data handling
 pandas>=1.3.0
 

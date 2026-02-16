@@ -1,0 +1,62 @@
+{
+    "faultseg3d": {
+        "description": "FaultSeg3D - 3D CNN for fault detection (Wu et al., 2019)",
+        "source": "https://github.com/xinwucwp/faultSeg",
+        "paper": "Wu et al., 2019, Geophysics",
+        "weights": {
+            "pretrained_model.hdf5": {
+                "description": "Main pre-trained model",
+                "format": "Keras/TensorFlow HDF5",
+                "input_shape": [128, 128, 128, 1],
+                "output": "fault probability (0-1)"
+            },
+            "fseg-60.hdf5": "Checkpoint at epoch 60",
+            "fseg-65.hdf5": "Checkpoint at epoch 65",
+            "fseg-70.hdf5": "Checkpoint at epoch 70"
+        },
+        "usage_notes": "Model trained on synthetic data, requires conversion to PyTorch for integration"
+    },
+    "deepseismic_facies": {
+        "description": "DeepSeismic Facies Classification (Microsoft)",
+        "source": "https://github.com/microsoft/seismic-deeplearning",
+        "data": {
+            "dutch_f3_facies.zip": {
+                "description": "Dutch F3 facies classification benchmark",
+                "source": "https://zenodo.org/record/3755060",
+                "format": "NumPy arrays with train/val/test splits",
+                "classes": ["upper_ns", "middle_ns", "lower_ns", "rijnland_chalk", "scruff", "zechstein"]
+            }
+        },
+        "usage_notes": "Dataset for training/fine-tuning facies classification models"
+    },
+    "cnn_for_asi": {
+        "description": "CNN for Automated Seismic Interpretation (Waldeland et al., 2018)",
+        "source": "https://github.com/waldeland/CNN-for-ASI",
+        "paper": "Waldeland et al., 2018, The Leading Edge",
+        "data": {
+            "f3_netherlands": {
+                "description": "F3 Netherlands seismic survey",
+                "format": "SEGY",
+                "size_gb": 1.29
+            }
+        },
+        "usage_notes": "Tutorial repository - train models from scratch using texture patches"
+    },
+    "seismic_deep_learning": {
+        "description": "Deep Learning Tutorials for Seismic Interpretation (Wrona et al., 2021)",
+        "source": "https://github.com/thilowrona/seismic_deep_learning",
+        "paper": "Wrona et al., 2021, DOI: 10.5880/GFZ.2.5.2021.001",
+        "status": "Tutorial notebooks only - data requires author contact",
+        "usage_notes": "Educational resource for understanding DL approaches"
+    },
+    "bornu_chad_basin_classes": {
+        "description": "Custom facies classes for Bornu Chad Basin (PhD Research)",
+        "classes": [
+            {"id": 0, "name": "Channel Sand", "description": "Fluvial/deltaic sand deposits - potential reservoir"},
+            {"id": 1, "name": "Marine Shale", "description": "Fika Shale equivalent - potential seal"},
+            {"id": 2, "name": "Floodplain", "description": "Overbank/floodplain deposits"},
+            {"id": 3, "name": "Carbonate", "description": "Lacustrine carbonates"},
+            {"id": 4, "name": "Basement", "description": "Pre-Cretaceous basement complex"}
+        ]
+    }
+}

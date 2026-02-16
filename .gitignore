@@ -20,6 +20,14 @@ __pycache__/
 # Large numpy arrays
 *.npy
 
+# Deep learning data and models (large files - download separately)
+deep_learning/data/
+deep_learning/models/faultseg3d/*.hdf5
+*.hdf5
+*.h5
+*.dat
+*.zip
+
 # IDE
 .vscode/
 .idea/
