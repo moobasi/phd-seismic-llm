@@ -136,6 +136,15 @@ PROCESSING_STEPS = {
         "icon": "8",
         "inputs": ["3D interpretation", "2D inventory", "Velocity model"],
         "outputs": ["Integration map", "Amplitude comparison", "Regional-local correlation"]
+    },
+    9: {
+        "name": "Deep Learning Interpretation",
+        "description": "AI-powered fault detection, facies classification, and LLM interpretation",
+        "folder": "deep_learning",
+        "script": "dl_integration.py",
+        "icon": "9",
+        "inputs": ["3D SEGY", "Well markers (optional)"],
+        "outputs": ["Fault probability volume", "Facies classification", "LLM geological interpretation", "Integrated report"]
     }
 }
 
@@ -859,8 +868,8 @@ Examples:
         """
     )
 
-    parser.add_argument("--step", type=int, choices=range(1, 9),
-                       help="Run specific step (1-8)")
+    parser.add_argument("--step", type=int, choices=range(1, 10),
+                       help="Run specific step (1-9)")
     parser.add_argument("--all", action="store_true",
                        help="Run all steps in sequence")
     parser.add_argument("--status", action="store_true",

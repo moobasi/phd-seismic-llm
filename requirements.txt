@@ -1,5 +1,6 @@
 # =============================================================================
 # Seismic Processing Automation Suite - Dependencies
+# PhD Research: LLM-Assisted Seismic Interpretation Framework
 # =============================================================================
 # Install all dependencies with: pip install -r requirements.txt
 # =============================================================================
@@ -14,9 +15,17 @@ seaborn>=0.11.0        # Statistical visualizations
 segyio>=1.9.0
 lasio>=0.31.0          # Well log LAS file I/O
 
-# Machine learning
+# Machine learning (traditional)
 scikit-learn>=1.0.0
 scikit-image>=0.19.0
+
+# Deep Learning (for DL interpretation module)
+# PyTorch - install separately based on your CUDA version:
+#   CPU only:     pip install torch torchvision
+#   CUDA 12.x:    pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+#   CUDA 11.x:    pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+torch>=2.0.0
+torchvision>=0.15.0
 
 # Progress bars and CLI
 tqdm>=4.60.0
@@ -25,13 +34,31 @@ rich>=12.0.0
 # Data handling
 pandas>=1.3.0
 
-# Optional: GPU acceleration
+# Optional: GPU acceleration (CuPy for non-DL operations)
 # Uncomment the appropriate line for your CUDA version:
 # cupy-cuda11x    # For CUDA 11.x
 # cupy-cuda12x    # For CUDA 12.x
 
 # Optional: Web features
 requests>=2.25.0
+
+# =============================================================================
+# Deep Learning Models Integration
+# =============================================================================
+# The following repositories are integrated into the dl_interpretation module:
+#
+# 1. FaultSeg3D (Wu et al., 2019) - 3D CNN fault detection
+#    https://github.com/xinwucwp/faultSeg
+#
+# 2. DeepSeismic (Microsoft) - Facies classification
+#    https://github.com/microsoft/seismic-deeplearning
+#
+# 3. CNN-for-ASI (Waldeland et al., 2018) - Automated interpretation
+#    https://github.com/features/CNN-for-ASI
+#
+# 4. seismic_deep_learning (Wrona et al., 2021) - DL tutorials
+#    https://github.com/features/seismic_deep_learning
+# =============================================================================
 
 # =============================================================================
 # Installation Instructions:
