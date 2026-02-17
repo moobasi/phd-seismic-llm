@@ -33,6 +33,9 @@ import subprocess
 from scipy import signal, interpolate
 from scipy.ndimage import gaussian_filter
 import threading
+import argparse
+import glob as glob_module
+import os
 
 # Try to import segyio
 try:
@@ -545,9 +548,13 @@ class SeismicViewerGUI:
     - Time/Depth domain toggle
     - AI interpretation integration
     - Well tie display
+    - Auto-load from project config
     """
 
-    def __init__(self, parent_frame, ollama_client=None, colors=None):
+    def __init__(self, parent_frame, ollama_client=None, colors=None,
+                 initial_3d_path: Optional[str] = None,
+                 initial_2d_dir: Optional[str] = None,
+                 auto_load: bool = True):
         self.parent = parent_frame
         self.ollama = ollama_client
         self.colors = colors or {
@@ -559,6 +566,11 @@ class SeismicViewerGUI:
             'success': '#4ecca3',
             'warning': '#ffc107'
         }
+
+        # Store initial paths for auto-loading
+        self.initial_3d_path = initial_3d_path
+        self.initial_2d_dir = initial_2d_dir
+        self.auto_load = auto_load
 
         # Data
         self.loader = SeismicDataLoader()
@@ -584,9 +596,29 @@ class SeismicViewerGUI:
 
         self._create_gui()
 
+        # Auto-load data if paths provided
+        if self.auto_load:
+            self.parent.after(100, self._auto_load_data)
+
     def _load_fault_data(self):
         """Load fault data from interpretation results if available."""
         try:
+            # Try unified format first
+            unified_path = Path(__file__).parent / 'interpretation' / 'real_outputs' / 'unified_faults.json'
+            if unified_path.exists():
+                try:
+                    from fault_detection_unified import UnifiedFaultResult
+                    results = UnifiedFaultResult.load(str(unified_path))
+                    self.faults = [self._convert_unified_fault(f) for f in results.faults]
+                    self._fault_result = results
+                    print(f"Loaded {len(self.faults)} faults from unified format")
+                    return
+                except ImportError:
+                    pass  # Fall through to legacy format
+                except Exception as e:
+                    print(f"Could not load unified faults: {e}")
+
+            # Fall back to legacy format
             results_path = Path(__file__).parent / 'interpretation' / 'real_outputs' / 'interpretation_results.json'
             if results_path.exists():
                 with open(results_path, 'r') as f:
@@ -597,6 +629,90 @@ class SeismicViewerGUI:
         except Exception as e:
             print(f"Could not load fault data: {e}")
             self.faults = []
+
+    def _convert_unified_fault(self, fault) -> dict:
+        """Convert unified fault segment to legacy format for display."""
+        return {
+            'fault_id': fault.fault_id,
+            'representative_il': (fault.inline_range[0] + fault.inline_range[1]) // 2,
+            'representative_xl': (fault.crossline_range[0] + fault.crossline_range[1]) // 2,
+            'location': {
+                'inline': (fault.inline_range[0] + fault.inline_range[1]) // 2,
+                'crossline': (fault.crossline_range[0] + fault.crossline_range[1]) // 2,
+            },
+            'trace_points': fault.trace_points,
+            'confidence': fault.confidence,
+            'strike': fault.strike_azimuth,
+            'dip': fault.dip_angle
+        }
+
+    def _auto_load_data(self):
+        """Auto-load data from configured paths."""
+        loaded_any = False
+
+        # Load 3D volume if path provided
+        if self.initial_3d_path and os.path.exists(self.initial_3d_path):
+            try:
+                self.status_label.config(text="Auto-loading 3D volume...", fg=self.colors['warning'])
+                self.parent.update()
+
+                if self.loader.load_3d_volume(self.initial_3d_path):
+                    # Update slider ranges
+                    self.il_slider.config(from_=self.loader.il_min, to=self.loader.il_max)
+                    self.xl_slider.config(from_=self.loader.xl_min, to=self.loader.xl_max)
+                    self.time_slider.config(from_=0, to=self.loader.record_length)
+
+                    # Set initial positions
+                    self.il_slider.set((self.loader.il_min + self.loader.il_max) // 2)
+                    self.xl_slider.set((self.loader.xl_min + self.loader.xl_max) // 2)
+                    self.time_slider.set(self.loader.record_length // 4)
+
+                    self.status_label.config(
+                        text=f"Auto-loaded 3D: IL {self.loader.il_min}-{self.loader.il_max}, "
+                             f"XL {self.loader.xl_min}-{self.loader.xl_max}",
+                        fg=self.colors['success']
+                    )
+                    loaded_any = True
+                    print(f"Auto-loaded 3D volume: {self.initial_3d_path}")
+            except Exception as e:
+                print(f"Auto-load 3D failed: {e}")
+                self.status_label.config(text=f"Auto-load 3D failed: {e}", fg=self.colors['accent'])
+
+        # Load 2D lines if directory provided
+        if self.initial_2d_dir and os.path.isdir(self.initial_2d_dir):
+            try:
+                segy_files = glob_module.glob(os.path.join(self.initial_2d_dir, "*.sgy"))
+                segy_files.extend(glob_module.glob(os.path.join(self.initial_2d_dir, "*.segy")))
+                segy_files.extend(glob_module.glob(os.path.join(self.initial_2d_dir, "*.SGY")))
+                segy_files.extend(glob_module.glob(os.path.join(self.initial_2d_dir, "*.SEGY")))
+
+                loaded_count = 0
+                for f in segy_files[:10]:  # Load first 10
+                    try:
+                        data, info = self.loader.load_2d_line(f)
+                        if data is not None:
+                            self.loader.segy_2d_files[info['filename']] = {'data': data, 'info': info}
+                            loaded_count += 1
+                    except:
+                        pass
+
+                if loaded_count > 0:
+                    msg = f"Auto-loaded {loaded_count} 2D lines"
+                    if loaded_any:
+                        self.status_label.config(
+                            text=self.status_label.cget("text") + f" | {msg}",
+                            fg=self.colors['success']
+                        )
+                    else:
+                        self.status_label.config(text=msg, fg=self.colors['success'])
+                    loaded_any = True
+                    print(f"Auto-loaded {loaded_count} 2D lines from: {self.initial_2d_dir}")
+            except Exception as e:
+                print(f"Auto-load 2D failed: {e}")
+
+        # Display initial section if 3D data loaded
+        if loaded_any and self.loader.segy_3d is not None:
+            self._display_section()
 
     def _create_gui(self):
         """Create the viewer GUI."""
@@ -1818,8 +1934,29 @@ class WellTiePanel:
         )
 
 
+def parse_args():
+    """Parse command-line arguments for seismic viewer."""
+    parser = argparse.ArgumentParser(
+        description="Seismic Viewer - PhD Research",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+    python seismic_viewer.py
+    python seismic_viewer.py --segy-3d path/to/volume.segy
+    python seismic_viewer.py --segy-3d volume.segy --segy-2d-dir path/to/2d_lines/
+        """
+    )
+    parser.add_argument("--segy-3d", type=str, help="Path to 3D SEGY file to auto-load")
+    parser.add_argument("--segy-2d-dir", type=str, help="Directory containing 2D SEGY files to auto-load")
+    parser.add_argument("--no-auto-load", action="store_true", help="Disable auto-loading of data")
+    return parser.parse_args()
+
+
 # Main entry point for standalone testing
 if __name__ == "__main__":
+    # Parse command-line arguments
+    args = parse_args()
+
     root = tk.Tk()
     root.title("Seismic Viewer - PhD Research")
     root.geometry("1400x900")
@@ -1835,20 +1972,153 @@ if __name__ == "__main__":
     }
     root.configure(bg=colors['bg'])
 
+    # Apply dark theme to ttk widgets
+    style = ttk.Style()
+    style.theme_use('clam')
+    style.configure('TFrame', background=colors['bg'])
+    style.configure('TLabel', background=colors['bg'], foreground=colors['fg'])
+    style.configure('TNotebook', background=colors['bg'])
+    style.configure('TNotebook.Tab', background=colors['surface'], foreground=colors['fg'])
+    style.map('TNotebook.Tab', background=[('selected', colors['overlay'])])
+
     # Create notebook for tabs
     notebook = ttk.Notebook(root)
     notebook.pack(fill=tk.BOTH, expand=True)
 
-    # Seismic viewer tab
+    # Seismic viewer tab (2D sections)
     viewer_frame = tk.Frame(notebook, bg=colors['bg'])
-    notebook.add(viewer_frame, text="Seismic Viewer")
+    notebook.add(viewer_frame, text="2D Sections")
 
-    viewer = SeismicViewerGUI(viewer_frame, colors=colors)
+    # Create viewer with auto-load paths from command line
+    viewer = SeismicViewerGUI(
+        viewer_frame,
+        colors=colors,
+        initial_3d_path=args.segy_3d,
+        initial_2d_dir=args.segy_2d_dir,
+        auto_load=not args.no_auto_load
+    )
 
     # Well tie tab
     tie_frame = tk.Frame(notebook, bg=colors['bg'])
     notebook.add(tie_frame, text="Well Tie Validation")
 
     tie_panel = WellTiePanel(tie_frame, viewer.well_tie, colors=colors)
+
+    # 3D Volume tab
+    try:
+        from viewer_3d import Seismic3DViewer, Overlay2D3DViewer
+
+        # 3D Volume viewer tab
+        viewer_3d_frame = ttk.Frame(notebook)
+        notebook.add(viewer_3d_frame, text="3D Volume")
+        viewer_3d = Seismic3DViewer(viewer_3d_frame, colors=colors)
+
+        # 2D/3D Overlay tab
+        overlay_frame = ttk.Frame(notebook)
+        notebook.add(overlay_frame, text="2D/3D Overlay")
+        overlay_viewer = Overlay2D3DViewer(overlay_frame, colors=colors)
+
+        # Connect data when loaded
+        def update_3d_viewers():
+            """Update 3D viewers when data is loaded."""
+            if viewer.loader.segy_3d is not None:
+                try:
+                    # For 3D viewer, we need to load full volume (expensive)
+                    # Only load on demand when tab is selected
+                    pass
+                except:
+                    pass
+
+        # Tab change handler to load 3D data on demand
+        def on_tab_change(event):
+            tab_name = notebook.tab(notebook.select(), "text")
+            if tab_name == "3D Volume":
+                if viewer.loader.segy_3d is not None and viewer_3d.seismic_data is None:
+                    # Load subset of 3D data for visualization
+                    try:
+                        import segyio
+                        with segyio.open(viewer.loader.segy_3d_path, 'r', strict=False) as f:
+                            # Load downsampled volume
+                            n_il = len(f.ilines)
+                            n_xl = len(f.xlines)
+                            n_samples = f.samples.size
+
+                            # Downsample for memory
+                            ds = max(1, min(n_il, n_xl) // 100)
+                            volume = np.zeros((n_il // ds, n_xl // ds, n_samples // ds),
+                                             dtype=np.float32)
+
+                            for i, il in enumerate(f.ilines[::ds]):
+                                try:
+                                    data = f.iline[il]
+                                    volume[i, :, :] = data[::ds, ::ds].T
+                                except:
+                                    pass
+
+                            viewer_3d.set_seismic_data(volume, {
+                                'il_min': viewer.loader.il_min,
+                                'il_max': viewer.loader.il_max,
+                                'xl_min': viewer.loader.xl_min,
+                                'xl_max': viewer.loader.xl_max,
+                                'sample_rate_ms': viewer.loader.sample_rate
+                            })
+
+                            # Load fault probability if available
+                            fault_prob_path = Path(__file__).parent / 'interpretation' / 'real_outputs' / 'fault_probability.npy'
+                            if fault_prob_path.exists():
+                                fault_prob = np.load(fault_prob_path)
+                                # Downsample to match
+                                fault_ds = fault_prob[::ds, ::ds, ::ds]
+                                viewer_3d.set_fault_data(fault_ds)
+
+                    except Exception as e:
+                        print(f"Error loading 3D data for viewer: {e}")
+
+            elif tab_name == "2D/3D Overlay":
+                if viewer.loader.segy_3d is not None and overlay_viewer.seismic_3d is None:
+                    try:
+                        import segyio
+                        with segyio.open(viewer.loader.segy_3d_path, 'r', strict=False) as f:
+                            # Load subset for overlay
+                            ds = 2
+                            n_il = len(f.ilines)
+                            n_xl = len(f.xlines)
+                            n_samples = f.samples.size
+
+                            volume = np.zeros((n_il // ds, n_xl // ds, n_samples),
+                                             dtype=np.float32)
+
+                            for i, il in enumerate(f.ilines[::ds]):
+                                try:
+                                    data = f.iline[il]
+                                    volume[i, :, :] = data[::ds, :].T
+                                except:
+                                    pass
+
+                            overlay_viewer.set_3d_data(volume, {
+                                'il_min': viewer.loader.il_min,
+                                'il_max': viewer.loader.il_max
+                            })
+
+                    except Exception as e:
+                        print(f"Error loading 3D for overlay: {e}")
+
+                # Add any loaded 2D lines
+                for name, line_data in viewer.loader.segy_2d_files.items():
+                    if name not in overlay_viewer.seismic_2d_lines:
+                        overlay_viewer.add_2d_line(
+                            name,
+                            line_data['data'],
+                            line_data.get('info', {})
+                        )
+
+        notebook.bind('<<NotebookTabChanged>>', on_tab_change)
+
+        print("3D visualization tabs loaded successfully")
+
+    except ImportError as e:
+        print(f"Note: 3D visualization not available ({e})")
+    except Exception as e:
+        print(f"Error initializing 3D viewers: {e}")
 
     root.mainloop()

@@ -26,6 +26,7 @@ import threading
 import subprocess
 import sys
 import json
+import re
 from datetime import datetime
 
 # =============================================================================
@@ -233,6 +234,140 @@ class PathSelector(tk.Frame):
 
     def set(self, value: str):
         self.path_var.set(value)
+
+
+class ProgressPanel(tk.Frame):
+    """Panel showing real-time progress of running processing steps."""
+
+    def __init__(self, parent):
+        super().__init__(parent, bg=ModernTheme.BG_SURFACE)
+
+        # Header
+        header = tk.Frame(self, bg=ModernTheme.BG_SURFACE)
+        header.pack(fill=tk.X, padx=15, pady=(15, 10))
+
+        tk.Label(
+            header, text="Processing Status",
+            font=ModernTheme.FONT_HEADING, bg=ModernTheme.BG_SURFACE,
+            fg=ModernTheme.ACCENT
+        ).pack(side=tk.LEFT)
+
+        self.status_indicator = tk.Label(
+            header, text="● Idle", font=ModernTheme.FONT_SMALL,
+            bg=ModernTheme.BG_SURFACE, fg=ModernTheme.FG_MUTED
+        )
+        self.status_indicator.pack(side=tk.RIGHT)
+
+        # Current step info
+        self.step_frame = tk.Frame(self, bg=ModernTheme.BG_OVERLAY)
+        self.step_frame.pack(fill=tk.X, padx=15, pady=(0, 10))
+
+        self.step_label = tk.Label(
+            self.step_frame, text="No step running",
+            font=ModernTheme.FONT_BODY, bg=ModernTheme.BG_OVERLAY,
+            fg=ModernTheme.FG_SECONDARY, anchor='w'
+        )
+        self.step_label.pack(fill=tk.X, padx=10, pady=(10, 5))
+
+        # Progress bar with percentage
+        progress_row = tk.Frame(self.step_frame, bg=ModernTheme.BG_OVERLAY)
+        progress_row.pack(fill=tk.X, padx=10, pady=(0, 10))
+
+        self.progress_var = tk.DoubleVar(value=0)
+        self.progress_bar = ttk.Progressbar(
+            progress_row, variable=self.progress_var,
+            mode='determinate', length=200
+        )
+        self.progress_bar.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
+        self.progress_label = tk.Label(
+            progress_row, text="0%", font=ModernTheme.FONT_SMALL,
+            bg=ModernTheme.BG_OVERLAY, fg=ModernTheme.FG_PRIMARY, width=6
+        )
+        self.progress_label.pack(side=tk.RIGHT, padx=(10, 0))
+
+        # Log output area
+        log_label = tk.Label(
+            self, text="Live Output:", font=ModernTheme.FONT_SMALL,
+            bg=ModernTheme.BG_SURFACE, fg=ModernTheme.FG_SECONDARY, anchor='w'
+        )
+        log_label.pack(fill=tk.X, padx=15, pady=(5, 2))
+
+        # Scrollable log text
+        log_frame = tk.Frame(self, bg=ModernTheme.BG_INPUT)
+        log_frame.pack(fill=tk.BOTH, expand=True, padx=15, pady=(0, 15))
+
+        self.log_text = tk.Text(
+            log_frame, font=ModernTheme.FONT_MONO,
+            bg=ModernTheme.BG_INPUT, fg=ModernTheme.FG_PRIMARY,
+            relief='flat', height=8, wrap=tk.WORD,
+            state='disabled'
+        )
+        log_scrollbar = ttk.Scrollbar(log_frame, orient="vertical", command=self.log_text.yview)
+        self.log_text.configure(yscrollcommand=log_scrollbar.set)
+
+        self.log_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
+        log_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Configure text tags for colored output
+        self.log_text.tag_configure('info', foreground=ModernTheme.FG_PRIMARY)
+        self.log_text.tag_configure('success', foreground=ModernTheme.SUCCESS)
+        self.log_text.tag_configure('error', foreground=ModernTheme.ERROR)
+        self.log_text.tag_configure('warning', foreground=ModernTheme.WARNING)
+
+    def set_running(self, step_num: int, step_name: str):
+        """Set the panel to show a running step."""
+        self.status_indicator.config(text="● Running", fg=ModernTheme.WARNING)
+        self.step_label.config(
+            text=f"Step {step_num}: {step_name}",
+            fg=ModernTheme.FG_PRIMARY
+        )
+        self.progress_var.set(0)
+        self.progress_label.config(text="0%")
+        self.clear_log()
+
+    def set_progress(self, percent: float):
+        """Update progress percentage (0-100)."""
+        self.progress_var.set(percent)
+        self.progress_label.config(text=f"{int(percent)}%")
+
+    def set_completed(self, step_num: int, step_name: str):
+        """Mark step as completed."""
+        self.status_indicator.config(text="● Completed", fg=ModernTheme.SUCCESS)
+        self.step_label.config(
+            text=f"Step {step_num}: {step_name} - Done!",
+            fg=ModernTheme.SUCCESS
+        )
+        self.progress_var.set(100)
+        self.progress_label.config(text="100%")
+
+    def set_error(self, step_num: int, step_name: str):
+        """Mark step as failed."""
+        self.status_indicator.config(text="● Error", fg=ModernTheme.ERROR)
+        self.step_label.config(
+            text=f"Step {step_num}: {step_name} - Failed!",
+            fg=ModernTheme.ERROR
+        )
+
+    def set_idle(self):
+        """Reset to idle state."""
+        self.status_indicator.config(text="● Idle", fg=ModernTheme.FG_MUTED)
+        self.step_label.config(text="No step running", fg=ModernTheme.FG_SECONDARY)
+        self.progress_var.set(0)
+        self.progress_label.config(text="0%")
+
+    def clear_log(self):
+        """Clear the log output."""
+        self.log_text.config(state='normal')
+        self.log_text.delete(1.0, tk.END)
+        self.log_text.config(state='disabled')
+
+    def append_log(self, text: str, tag: str = 'info'):
+        """Append text to the log output."""
+        self.log_text.config(state='normal')
+        self.log_text.insert(tk.END, text, tag)
+        self.log_text.see(tk.END)
+        self.log_text.config(state='disabled')
 
 
 class StepCard(tk.Frame):
@@ -571,9 +706,18 @@ class PHDWorkflowApp:
         ).pack(fill=tk.X, ipady=8)
 
     def _create_workflow_panel(self, parent):
-        """Create workflow steps panel."""
+        """Create workflow steps panel with progress display."""
+        # Split into top (steps) and bottom (progress) sections
+        top_frame = tk.Frame(parent, bg=ModernTheme.BG_DARK)
+        top_frame.pack(fill=tk.BOTH, expand=True)
+
+        bottom_frame = tk.Frame(parent, bg=ModernTheme.BG_SURFACE, height=250)
+        bottom_frame.pack(fill=tk.X, pady=(10, 0))
+        bottom_frame.pack_propagate(False)
+
+        # ===== TOP: Step Cards =====
         # Title
-        title_frame = tk.Frame(parent, bg=ModernTheme.BG_DARK)
+        title_frame = tk.Frame(top_frame, bg=ModernTheme.BG_DARK)
         title_frame.pack(fill=tk.X, pady=(0, 15))
 
         tk.Label(
@@ -590,8 +734,8 @@ class PHDWorkflowApp:
         ).pack(side=tk.RIGHT, ipadx=15, ipady=5)
 
         # Scrollable frame for step cards
-        canvas = tk.Canvas(parent, bg=ModernTheme.BG_DARK, highlightthickness=0)
-        scrollbar = ttk.Scrollbar(parent, orient="vertical", command=canvas.yview)
+        canvas = tk.Canvas(top_frame, bg=ModernTheme.BG_DARK, highlightthickness=0)
+        scrollbar = ttk.Scrollbar(top_frame, orient="vertical", command=canvas.yview)
         scrollable_frame = tk.Frame(canvas, bg=ModernTheme.BG_DARK)
 
         scrollable_frame.bind(
@@ -626,6 +770,10 @@ class PHDWorkflowApp:
             canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
         canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+        # ===== BOTTOM: Progress Panel =====
+        self.progress_panel = ProgressPanel(bottom_frame)
+        self.progress_panel.pack(fill=tk.BOTH, expand=True)
 
     # =========================================================================
     # Configuration methods
@@ -715,7 +863,7 @@ class PHDWorkflowApp:
     # =========================================================================
 
     def _run_step(self, step_num: int):
-        """Run a specific processing step."""
+        """Run a specific processing step with real-time output streaming."""
         # Validate config first
         validation = self.config.validate()
         if validation['errors']:
@@ -737,6 +885,9 @@ class PHDWorkflowApp:
         # Update UI
         card = self.step_cards[step_num]
         card.set_status("running")
+
+        # Update progress panel
+        self.progress_panel.set_running(step_num, step_info['name'])
 
         # Run in background thread
         def run():
@@ -763,30 +914,86 @@ class PHDWorkflowApp:
 
                 cmd.extend(["--output-dir", self.config.output_directory])
 
-                # Run process
-                result = subprocess.run(
+                # Run process with real-time output streaming
+                process = subprocess.Popen(
                     cmd,
                     cwd=str(get_framework_dir()),
-                    capture_output=True,
-                    text=True
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1,
+                    universal_newlines=True
                 )
 
+                # Stream output to progress panel
+                line_count = 0
+                progress_estimate = 0
+                output_lines = []
+
+                for line in iter(process.stdout.readline, ''):
+                    if not line:
+                        break
+
+                    line_count += 1
+                    output_lines.append(line)
+
+                    # Determine line type for coloring
+                    line_lower = line.lower()
+                    if 'error' in line_lower or 'failed' in line_lower:
+                        tag = 'error'
+                    elif 'warning' in line_lower:
+                        tag = 'warning'
+                    elif 'complete' in line_lower or 'success' in line_lower or 'done' in line_lower:
+                        tag = 'success'
+                    else:
+                        tag = 'info'
+
+                    # Update progress panel in main thread
+                    self.root.after(0, lambda l=line, t=tag: self.progress_panel.append_log(l, t))
+
+                    # Estimate progress based on output patterns
+                    # Look for percentage patterns like "50%" or "Processing 5/10"
+                    percent_match = re.search(r'(\d+)%', line)
+                    if percent_match:
+                        progress_estimate = int(percent_match.group(1))
+                        self.root.after(0, lambda p=progress_estimate: self.progress_panel.set_progress(p))
+                    else:
+                        # Estimate based on line count (rough estimate)
+                        estimated_total_lines = 100  # Rough estimate
+                        progress_estimate = min(95, (line_count / estimated_total_lines) * 100)
+                        self.root.after(0, lambda p=progress_estimate: self.progress_panel.set_progress(p))
+
+                process.wait()
+                return_code = process.returncode
+
                 # Update UI based on result
-                if result.returncode == 0:
+                if return_code == 0:
                     # Mark step as completed and save state
                     self.state.mark_completed(step_num)
                     self.root.after(0, lambda: card.set_status("completed"))
                     self.root.after(0, lambda: card.run_btn.config(text="Re-run"))
+                    self.root.after(0, lambda: self.progress_panel.set_completed(step_num, step_info['name']))
                     self.root.after(0, self._update_title)
+                    self.root.after(0, lambda: self.progress_panel.append_log(
+                        f"\n✓ Step {step_num} completed successfully!\n", 'success'
+                    ))
                 else:
                     self.root.after(0, lambda: card.set_status("error"))
+                    self.root.after(0, lambda: self.progress_panel.set_error(step_num, step_info['name']))
+                    self.root.after(0, lambda: self.progress_panel.append_log(
+                        f"\n✗ Step {step_num} failed with return code {return_code}\n", 'error'
+                    ))
+                    # Show error message
+                    error_output = ''.join(output_lines[-20:])  # Last 20 lines
                     self.root.after(0, lambda: messagebox.showerror(
                         f"Step {step_num} Error",
-                        f"Error running step:\n{result.stderr[:500]}"
+                        f"Error running step:\n{error_output[:500]}"
                     ))
 
             except Exception as e:
                 self.root.after(0, lambda: card.set_status("error"))
+                self.root.after(0, lambda: self.progress_panel.set_error(step_num, step_info['name']))
+                self.root.after(0, lambda: self.progress_panel.append_log(f"\n✗ Exception: {e}\n", 'error'))
                 self.root.after(0, lambda: messagebox.showerror(
                     f"Step {step_num} Error", str(e)
                 ))
@@ -861,22 +1068,39 @@ class PHDWorkflowApp:
     # =========================================================================
 
     def _open_viewer(self):
-        """Open seismic viewer."""
+        """Open seismic viewer with configured data paths."""
         try:
-            subprocess.Popen([
+            # Build command with config paths for auto-loading
+            cmd = [
                 sys.executable,
                 str(get_framework_dir() / "seismic_viewer.py")
-            ])
+            ]
+
+            # Add 3D seismic path if configured
+            if self.config.seismic_3d_path and Path(self.config.seismic_3d_path).exists():
+                cmd.extend(["--segy-3d", self.config.seismic_3d_path])
+
+            # Add 2D seismic directory if configured
+            if self.config.seismic_2d_directory and Path(self.config.seismic_2d_directory).exists():
+                cmd.extend(["--segy-2d-dir", self.config.seismic_2d_directory])
+
+            subprocess.Popen(cmd)
         except Exception as e:
             messagebox.showerror("Error", f"Could not open viewer: {e}")
 
     def _open_ai_assistant(self):
-        """Open AI assistant."""
+        """Open AI assistant (v3 - unified agent interface)."""
         try:
-            subprocess.Popen([
-                sys.executable,
-                str(get_framework_dir() / "seismic_ai_assistant_v2.py")
-            ])
+            # Try v3 first (new unified interface)
+            v3_path = get_framework_dir() / "seismic_ai_assistant_v3.py"
+            if v3_path.exists():
+                subprocess.Popen([sys.executable, str(v3_path)])
+            else:
+                # Fall back to v2
+                subprocess.Popen([
+                    sys.executable,
+                    str(get_framework_dir() / "seismic_ai_assistant_v2.py")
+                ])
         except Exception as e:
             messagebox.showerror("Error", f"Could not open AI assistant: {e}")
 
