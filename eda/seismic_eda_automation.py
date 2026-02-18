@@ -1513,7 +1513,9 @@ Examples:
         parser.print_help()
         sys.exit(1)
 
-    # Override with CLI args
+    # Override with CLI args - segy_file from positional arg takes priority
+    if args.segy_file:
+        config.segy_file = args.segy_file
     config.output_dir = args.output
     if args.webhook:
         config.webhook_url = args.webhook

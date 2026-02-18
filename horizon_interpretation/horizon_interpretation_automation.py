@@ -1030,6 +1030,12 @@ Examples:
             webhook_url=args.webhook
         )
 
+    # Override with CLI args - positional arg takes priority
+    if args.seismic_file:
+        config.seismic_file = args.seismic_file
+    if args.output_dir:
+        config.output_dir = args.output_dir
+
     # Run automation
     automation = HorizonInterpretationAutomation(config)
     results = automation.run()

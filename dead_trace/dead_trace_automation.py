@@ -1067,7 +1067,9 @@ Examples:
         parser.print_help()
         sys.exit(1)
 
-    # Override with CLI args
+    # Override with CLI args - positional arg takes priority
+    if args.input_segy:
+        config.input_segy = args.input_segy
     if args.output:
         config.output_segy = args.output
     config.output_dir = args.output_dir

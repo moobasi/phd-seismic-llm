@@ -1231,6 +1231,12 @@ def main():
             webhook_url=args.webhook
         )
 
+    # Override with CLI args - positional arg takes priority
+    if args.base_dir:
+        config.base_dir = args.base_dir
+    if args.output_dir:
+        config.output_dir = args.output_dir
+
     # Run automation
     automation = HorizonAttributeAutomation(config)
     results = automation.run()
