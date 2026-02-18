@@ -19,9 +19,10 @@ PhD Research - University of Calabar
 
 import numpy as np
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog
 from typing import Optional, Dict, List, Tuple
 from pathlib import Path
+import json
 
 # Check for 3D libraries
 PYVISTA_AVAILABLE = False
@@ -81,15 +82,23 @@ class Seismic3DViewer:
         self.fault_data: Optional[np.ndarray] = None
         self.geometry: Dict = {}
 
+        # Well data for 3D display
+        self.wells: Dict[str, Dict] = {}
+        self.well_logs: Dict[str, Dict] = {}
+
         # Display settings
         self.opacity = 0.3
         self.colormap = "seismic"
         self.fault_threshold = 0.5
         self.show_faults_var = tk.BooleanVar(value=True)
         self.show_seismic_var = tk.BooleanVar(value=True)
+        self.show_wells_var = tk.BooleanVar(value=True)
 
         # Downsampling for performance
         self.downsample_factor = 4
+
+        # Try to load well data
+        self._load_well_data()
 
         # Initialize viewer
         if PYVISTA_AVAILABLE:
@@ -178,6 +187,8 @@ class Seismic3DViewer:
                        variable=self.show_seismic_var).pack(side=tk.LEFT, padx=5)
         ttk.Checkbutton(row1, text="Show Faults",
                        variable=self.show_faults_var).pack(side=tk.LEFT, padx=5)
+        ttk.Checkbutton(row1, text="Show Wells",
+                       variable=self.show_wells_var).pack(side=tk.LEFT, padx=5)
 
         ttk.Label(row1, text="Opacity:").pack(side=tk.LEFT, padx=(20, 5))
         self.opacity_var = tk.DoubleVar(value=0.3)
@@ -231,6 +242,52 @@ class Seismic3DViewer:
             self.time_skip_var = tk.IntVar(value=20)
             ttk.Spinbox(row3, from_=1, to=100, width=5,
                        textvariable=self.time_skip_var).pack(side=tk.LEFT, padx=5)
+
+    def _load_well_data(self):
+        """Load well locations from well_locations.json."""
+        try:
+            # Try multiple possible locations
+            possible_paths = [
+                Path(__file__).parent / "well_locations.json",
+                Path("well_locations.json"),
+                Path(__file__).parent / "outputs" / "well_locations.json"
+            ]
+
+            for well_file in possible_paths:
+                if well_file.exists():
+                    with open(well_file, 'r') as f:
+                        data = json.load(f)
+                        self.wells = data.get('wells', {})
+                        print(f"3D Viewer: Loaded {len(self.wells)} wells from {well_file}")
+                        return
+
+            print("3D Viewer: No well_locations.json found")
+        except Exception as e:
+            print(f"3D Viewer: Error loading well data: {e}")
+
+    def load_well_logs(self, well_name: str, logs_dir: str):
+        """
+        Load well log data for display along well trajectory.
+
+        Args:
+            well_name: Name of the well
+            logs_dir: Directory containing LAS files
+        """
+        try:
+            import lasio
+            las_path = Path(logs_dir) / f"{well_name}.las"
+            if las_path.exists():
+                las = lasio.read(str(las_path))
+                self.well_logs[well_name] = {
+                    'depth': las.index,
+                    'gr': las['GR'] if 'GR' in las.keys() else None,
+                    'data': las
+                }
+                print(f"3D Viewer: Loaded logs for {well_name}")
+        except ImportError:
+            print("3D Viewer: lasio not available for well log loading")
+        except Exception as e:
+            print(f"3D Viewer: Error loading logs for {well_name}: {e}")
 
     def set_seismic_data(self, data: np.ndarray, geometry: Dict):
         """
@@ -309,6 +366,10 @@ class Seismic3DViewer:
                     show_edges=False
                 )
 
+        # Add wells (Petrel-style)
+        if self.show_wells_var.get() and self.wells:
+            self._render_wells_pyvista(plotter, data.shape, ds)
+
         # Add axes
         plotter.add_axes()
 
@@ -341,6 +402,89 @@ class Seismic3DViewer:
         except Exception as e:
             print(f"Fault surface extraction error: {e}")
             return None
+
+    def _render_wells_pyvista(self, plotter, data_shape: tuple, downsample: int):
+        """
+        Render wells using PyVista (3D tubes with labels).
+
+        Args:
+            plotter: PyVista plotter instance
+            data_shape: Shape of downsampled seismic data
+            downsample: Downsample factor
+        """
+        if not PYVISTA_AVAILABLE:
+            return
+
+        well_colors = ['lime', 'cyan', 'magenta', 'orange', 'red', 'blue']
+        color_idx = 0
+
+        n_il, n_xl, n_samples = data_shape
+
+        for well_name, well_data in self.wells.items():
+            if not well_data.get('within_3d', False):
+                continue
+
+            # Get inline/crossline position
+            il_approx = well_data.get('inline_approx', 0)
+            xl_approx = well_data.get('xline_approx', 0)
+
+            # Convert to volume coordinates
+            il_min = self.geometry.get('il_min', 5000)
+            xl_min = self.geometry.get('xl_min', 5000)
+
+            il_pos = (il_approx - il_min) / downsample
+            xl_pos = (xl_approx - xl_min) / downsample
+
+            # Clamp to volume bounds
+            il_pos = np.clip(il_pos, 0, n_il - 1)
+            xl_pos = np.clip(xl_pos, 0, n_xl - 1)
+
+            # Create well trajectory points (vertical well)
+            n_points = 50
+            points = np.zeros((n_points, 3))
+            points[:, 0] = xl_pos  # X = crossline
+            points[:, 1] = il_pos  # Y = inline
+            points[:, 2] = np.linspace(0, n_samples * 0.9, n_points)  # Z = time/depth
+
+            # Create tube for well trajectory
+            try:
+                well_line = pv.lines_from_points(points)
+                well_tube = well_line.tube(radius=1.5)
+
+                color = well_colors[color_idx % len(well_colors)]
+                plotter.add_mesh(
+                    well_tube,
+                    color=color,
+                    opacity=1.0,
+                    label=well_name
+                )
+
+                # Add well head marker (sphere at surface)
+                well_head = pv.Sphere(radius=3, center=(xl_pos, il_pos, 0))
+                plotter.add_mesh(well_head, color=color)
+
+                # Add well name label
+                plotter.add_point_labels(
+                    [(xl_pos, il_pos, -5)],
+                    [well_name],
+                    font_size=14,
+                    text_color='white',
+                    shape_color=color,
+                    shape='rounded_rect',
+                    shape_opacity=0.8
+                )
+
+                # Add depth markers
+                depth_interval = n_samples // 5
+                for z in range(depth_interval, n_samples, depth_interval):
+                    depth_ms = z * downsample * self.geometry.get('sample_rate_ms', 4.0)
+                    marker = pv.Sphere(radius=1, center=(xl_pos, il_pos, z))
+                    plotter.add_mesh(marker, color='white')
+
+                color_idx += 1
+
+            except Exception as e:
+                print(f"Error rendering well {well_name}: {e}")
 
     def _display_image(self, img: np.ndarray):
         """Display rendered image in Tkinter."""
@@ -456,19 +600,123 @@ class Seismic3DViewer:
                     alpha=0.6,
                     label='Faults'
                 )
-                self.ax.legend(loc='upper right')
+
+        # Plot wells with trajectory and depth markers (Petrel-style)
+        if self.show_wells_var.get() and self.wells:
+            self._render_wells_matplotlib(n_samples_ds, ds)
 
         # Labels
-        self.ax.set_xlabel('Crossline', color=self.colors['fg'])
-        self.ax.set_ylabel('Inline', color=self.colors['fg'])
-        self.ax.set_zlabel('Time (samples)', color=self.colors['fg'])
+        self.ax.set_xlabel('Crossline', color=self.colors['fg'], fontsize=14)
+        self.ax.set_ylabel('Inline', color=self.colors['fg'], fontsize=14)
+        self.ax.set_zlabel('Time (samples)', color=self.colors['fg'], fontsize=14)
         self.ax.invert_zaxis()
+
+        # Add legend if we have items
+        handles, labels = self.ax.get_legend_handles_labels()
+        if handles:
+            self.ax.legend(loc='upper right', fontsize=12)
 
         # Style axes
         self.ax.tick_params(colors=self.colors['fg'])
 
         self.fig.tight_layout()
         self.canvas.draw()
+
+    def _render_wells_matplotlib(self, n_samples: int, downsample: int):
+        """
+        Render wells in 3D matplotlib view (Petrel-style).
+
+        Args:
+            n_samples: Number of time samples in downsampled data
+            downsample: Downsample factor applied to seismic
+        """
+        # Well colors for different wells
+        well_colors = ['lime', 'cyan', 'magenta', 'orange', 'red', 'blue']
+        color_idx = 0
+
+        for well_name, well_data in self.wells.items():
+            # Only display wells within 3D volume
+            if not well_data.get('within_3d', False):
+                continue
+
+            # Get inline/crossline position
+            il_approx = well_data.get('inline_approx', 0)
+            xl_approx = well_data.get('xline_approx', 0)
+
+            # Convert to downsampled coordinates
+            # Assume geometry starts at il_min, xl_min
+            il_min = self.geometry.get('il_min', 5000)
+            xl_min = self.geometry.get('xl_min', 5000)
+
+            # Calculate relative position in volume (0 to n_il/xl)
+            il_pos = (il_approx - il_min) / downsample
+            xl_pos = (xl_approx - xl_min) / downsample
+
+            # Well trajectory - vertical for now (from surface to TD)
+            # In real implementation, would use deviation survey
+            n_depth_points = 50
+            z_trajectory = np.linspace(0, n_samples * 0.9, n_depth_points)
+
+            # Create slight deviation for visual interest (simulated trajectory)
+            il_trajectory = np.full(n_depth_points, il_pos)
+            xl_trajectory = np.full(n_depth_points, xl_pos)
+
+            # Plot well trajectory as a thick line (well stick)
+            color = well_colors[color_idx % len(well_colors)]
+            self.ax.plot(
+                xl_trajectory, il_trajectory, z_trajectory,
+                color=color, linewidth=4, label=well_name,
+                solid_capstyle='round'
+            )
+
+            # Add well head marker (surface location)
+            self.ax.scatter(
+                [xl_pos], [il_pos], [0],
+                c=color, s=150, marker='^',
+                edgecolors='white', linewidths=2,
+                zorder=10
+            )
+
+            # Add well name label at surface
+            self.ax.text(
+                xl_pos, il_pos, -5,
+                well_name,
+                color='white',
+                fontsize=12,
+                fontweight='bold',
+                ha='center',
+                bbox=dict(boxstyle='round,pad=0.3', facecolor=color, alpha=0.8)
+            )
+
+            # Add depth markers along well (every ~500ms TWT equivalent)
+            depth_interval = n_samples // 5  # 5 depth markers
+            for i, z in enumerate(range(0, n_samples, depth_interval)):
+                if z > 0:
+                    depth_ms = z * downsample * self.geometry.get('sample_rate_ms', 4.0)
+                    # Marker point
+                    self.ax.scatter(
+                        [xl_pos], [il_pos], [z],
+                        c='white', s=30, marker='o',
+                        edgecolors=color, linewidths=1
+                    )
+                    # Depth label
+                    self.ax.text(
+                        xl_pos + 3, il_pos + 3, z,
+                        f'{int(depth_ms)}ms',
+                        color=self.colors['fg'],
+                        fontsize=9,
+                        alpha=0.8
+                    )
+
+            # Add TD marker (total depth)
+            td_z = n_samples * 0.9
+            self.ax.scatter(
+                [xl_pos], [il_pos], [td_z],
+                c=color, s=100, marker='s',
+                edgecolors='white', linewidths=2
+            )
+
+            color_idx += 1
 
     def _reset_view(self):
         """Reset to default view."""

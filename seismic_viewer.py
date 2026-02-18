@@ -738,7 +738,7 @@ class SeismicViewerGUI:
         tk.Label(
             parent,
             text="Seismic Viewer",
-            font=('Segoe UI', 14, 'bold'),
+            font=('Segoe UI', 18, 'bold'),
             bg=self.colors['surface'],
             fg=self.colors['accent']
         ).pack(pady=10)
@@ -767,7 +767,7 @@ class SeismicViewerGUI:
         self.status_label = tk.Label(
             load_frame,
             text="No data loaded",
-            font=('Segoe UI', 9),
+            font=('Segoe UI', 12),
             bg=self.colors['surface'],
             fg=self.colors['warning'],
             wraplength=250
@@ -884,7 +884,7 @@ class SeismicViewerGUI:
         self.fault_count_label = tk.Label(
             fault_frame,
             text=f"({len(self.faults)} faults loaded)" if self.faults else "(no faults)",
-            font=('Segoe UI', 8),
+            font=('Segoe UI', 11),
             bg=self.colors['surface'],
             fg=self.colors['warning'] if self.faults else self.colors['fg']
         )
@@ -897,7 +897,7 @@ class SeismicViewerGUI:
             command=self._display_section,
             bg=self.colors['success'],
             fg='white',
-            font=('Segoe UI', 10, 'bold')
+            font=('Segoe UI', 13, 'bold')
         ).pack(fill=tk.X, padx=5, pady=10)
 
         # AI Interpretation
@@ -918,7 +918,7 @@ class SeismicViewerGUI:
             bg=self.colors['overlay'],
             fg=self.colors['fg'],
             wrap=tk.WORD,
-            font=('Consolas', 9)
+            font=('Consolas', 12)
         )
         self.ai_response.pack(fill=tk.X, padx=5, pady=5)
 
@@ -1161,7 +1161,7 @@ class SeismicViewerGUI:
 
         self.ax.set_xlabel('Crossline', color=self.colors['fg'])
         self.ax.set_ylabel(y_label, color=self.colors['fg'])
-        self.ax.set_title(f'Inline {il}', color=self.colors['fg'], fontsize=12, fontweight='bold')
+        self.ax.set_title(f'Inline {il}', color=self.colors['fg'], fontsize=16, fontweight='bold')
         self.ax.tick_params(colors=self.colors['fg'])
 
         # Overlay faults if enabled
@@ -1215,7 +1215,7 @@ class SeismicViewerGUI:
 
         self.ax.set_xlabel('Inline', color=self.colors['fg'])
         self.ax.set_ylabel(y_label, color=self.colors['fg'])
-        self.ax.set_title(f'Crossline {xl}', color=self.colors['fg'], fontsize=12, fontweight='bold')
+        self.ax.set_title(f'Crossline {xl}', color=self.colors['fg'], fontsize=16, fontweight='bold')
         self.ax.tick_params(colors=self.colors['fg'])
 
         # Overlay faults if enabled
@@ -1269,7 +1269,7 @@ class SeismicViewerGUI:
 
         self.ax.set_xlabel('Crossline', color=self.colors['fg'])
         self.ax.set_ylabel('Inline', color=self.colors['fg'])
-        self.ax.set_title(title, color=self.colors['fg'], fontsize=12, fontweight='bold')
+        self.ax.set_title(title, color=self.colors['fg'], fontsize=16, fontweight='bold')
         self.ax.tick_params(colors=self.colors['fg'])
 
         # Overlay faults if enabled
@@ -1316,7 +1316,7 @@ class SeismicViewerGUI:
 
         self.ax.set_xlabel('Trace Number', color=self.colors['fg'])
         self.ax.set_ylabel(y_label, color=self.colors['fg'])
-        self.ax.set_title(f"2D Line: {info['filename']}", color=self.colors['fg'], fontsize=12, fontweight='bold')
+        self.ax.set_title(f"2D Line: {info['filename']}", color=self.colors['fg'], fontsize=16, fontweight='bold')
         self.ax.tick_params(colors=self.colors['fg'])
 
         # Colorbar - store reference for removal
@@ -1457,7 +1457,7 @@ class WellTiePanel:
         tk.Label(
             control_frame,
             text="Well-to-Seismic Tie Validation",
-            font=('Segoe UI', 12, 'bold'),
+            font=('Segoe UI', 16, 'bold'),
             bg=self.colors['surface'],
             fg=self.colors['accent']
         ).pack(side=tk.LEFT, padx=10)
@@ -1474,7 +1474,7 @@ class WellTiePanel:
             command=self._auto_load_well,
             bg=self.colors['accent'],
             fg='white',
-            font=('Segoe UI', 9, 'bold')
+            font=('Segoe UI', 16, 'bold')
         ).pack(side=tk.LEFT, padx=5)
 
         # Manual load
@@ -1492,7 +1492,7 @@ class WellTiePanel:
             command=self._calculate_tie,
             bg=self.colors['success'],
             fg='white',
-            font=('Segoe UI', 9, 'bold')
+            font=('Segoe UI', 16, 'bold')
         ).pack(side=tk.LEFT, padx=5)
 
         # Control frame row 2 - Well locations
@@ -1520,7 +1520,7 @@ class WellTiePanel:
         self.in_3d_label = tk.Label(
             control_frame2,
             text="",
-            font=('Segoe UI', 9),
+            font=('Segoe UI', 12),
             bg=self.colors['surface'],
             fg=self.colors['success']
         )
@@ -1530,7 +1530,7 @@ class WellTiePanel:
         self.results_label = tk.Label(
             self.parent,
             text="",
-            font=('Segoe UI', 10),
+            font=('Segoe UI', 13),
             bg=self.colors['bg'],
             fg=self.colors['fg'],
             wraplength=800
@@ -1656,7 +1656,7 @@ class WellTiePanel:
             "GR log | AI log | RC series | Synthetic | Seismic trace\n"
             "with correlation coefficient and quality assessment",
             ha='center', va='center',
-            fontsize=11,
+            fontsize=14,
             color=self.colors['fg'],
             transform=ax.transAxes
         )
@@ -1770,7 +1770,7 @@ class WellTiePanel:
             ax1.fill_betweenx(twt, 0, gr, alpha=0.3, color='green')
         ax1.set_ylabel('TWT (ms)', color=self.colors['fg'])
         ax1.set_xlabel('GR', color=self.colors['fg'])
-        ax1.set_title('Gamma Ray', color=self.colors['fg'], fontsize=10)
+        ax1.set_title('Gamma Ray', color=self.colors['fg'], fontsize=14)
         ax1.invert_yaxis()
         ax1.tick_params(colors=self.colors['fg'])
         ax1.set_xlim(0, 150)
@@ -1780,7 +1780,7 @@ class WellTiePanel:
         ax2.set_facecolor(self.colors['surface'])
         ax2.plot(tie['ai'], twt, 'b-', lw=0.5)
         ax2.set_xlabel('AI', color=self.colors['fg'])
-        ax2.set_title('Acoustic\nImpedance', color=self.colors['fg'], fontsize=10)
+        ax2.set_title('Acoustic\nImpedance', color=self.colors['fg'], fontsize=14)
         ax2.invert_yaxis()
         ax2.tick_params(colors=self.colors['fg'])
         ax2.set_yticklabels([])
@@ -1791,7 +1791,7 @@ class WellTiePanel:
         ax3.plot(tie['rc'], twt, 'k-', lw=0.5)
         ax3.axvline(0, color='gray', lw=0.5)
         ax3.set_xlabel('RC', color=self.colors['fg'])
-        ax3.set_title('Reflection\nCoef', color=self.colors['fg'], fontsize=10)
+        ax3.set_title('Reflection\nCoef', color=self.colors['fg'], fontsize=14)
         ax3.invert_yaxis()
         ax3.tick_params(colors=self.colors['fg'])
         ax3.set_yticklabels([])
@@ -1807,7 +1807,7 @@ class WellTiePanel:
         ax4.fill_betweenx(twt_reg, 0, syn, where=syn < 0, alpha=0.5, color='blue')
         ax4.axvline(0, color='gray', lw=0.5)
         ax4.set_xlabel('Amplitude', color=self.colors['fg'])
-        ax4.set_title('Synthetic', color=self.colors['fg'], fontsize=10)
+        ax4.set_title('Synthetic', color=self.colors['fg'], fontsize=14)
         ax4.invert_yaxis()
         ax4.tick_params(colors=self.colors['fg'])
         ax4.set_yticklabels([])
@@ -1824,7 +1824,7 @@ class WellTiePanel:
 
         ax5.axvline(0, color='gray', lw=0.5)
         ax5.set_xlabel('Amplitude', color=self.colors['fg'])
-        ax5.set_title('Seismic', color=self.colors['fg'], fontsize=10)
+        ax5.set_title('Seismic', color=self.colors['fg'], fontsize=14)
         ax5.invert_yaxis()
         ax5.tick_params(colors=self.colors['fg'])
         ax5.set_yticklabels([])
@@ -1840,7 +1840,7 @@ class WellTiePanel:
         self.fig.suptitle(
             f"{well_name} Well Tie - Correlation: r={corr:.3f} ({quality}) | Shift: {shift:.1f}ms | Phase: {phase:.0f}°",
             color=title_color,
-            fontsize=12,
+            fontsize=16,
             fontweight='bold'
         )
 
@@ -1876,7 +1876,7 @@ class WellTiePanel:
                 ax1.plot(df['GR'].values[:len(depth)], twt, 'g-', lw=0.5)
         ax1.set_ylabel('TWT (ms)', color=self.colors['fg'])
         ax1.set_xlabel('GR', color=self.colors['fg'])
-        ax1.set_title('Gamma Ray', color=self.colors['fg'], fontsize=10)
+        ax1.set_title('Gamma Ray', color=self.colors['fg'], fontsize=14)
         ax1.invert_yaxis()
         ax1.tick_params(colors=self.colors['fg'])
 
@@ -1885,7 +1885,7 @@ class WellTiePanel:
         ax2.set_facecolor(self.colors['surface'])
         ax2.plot(tie['ai'], twt, 'b-', lw=0.5)
         ax2.set_xlabel('AI', color=self.colors['fg'])
-        ax2.set_title('Acoustic Impedance', color=self.colors['fg'], fontsize=10)
+        ax2.set_title('Acoustic Impedance', color=self.colors['fg'], fontsize=14)
         ax2.invert_yaxis()
         ax2.tick_params(colors=self.colors['fg'])
         ax2.set_yticklabels([])
@@ -1896,7 +1896,7 @@ class WellTiePanel:
         ax3.plot(tie['rc'], twt, 'k-', lw=0.5)
         ax3.axvline(0, color='gray', lw=0.5)
         ax3.set_xlabel('RC', color=self.colors['fg'])
-        ax3.set_title('Reflection Coef', color=self.colors['fg'], fontsize=10)
+        ax3.set_title('Reflection Coef', color=self.colors['fg'], fontsize=14)
         ax3.invert_yaxis()
         ax3.tick_params(colors=self.colors['fg'])
         ax3.set_yticklabels([])
@@ -1911,7 +1911,7 @@ class WellTiePanel:
         ax4.fill_betweenx(twt_reg, 0, syn, where=syn < 0, alpha=0.5, color='blue')
         ax4.axvline(0, color='gray', lw=0.5)
         ax4.set_xlabel('Amplitude', color=self.colors['fg'])
-        ax4.set_title('Synthetic Seismogram', color=self.colors['fg'], fontsize=10)
+        ax4.set_title('Synthetic Seismogram', color=self.colors['fg'], fontsize=14)
         ax4.invert_yaxis()
         ax4.tick_params(colors=self.colors['fg'])
         ax4.set_yticklabels([])
@@ -1919,7 +1919,7 @@ class WellTiePanel:
         self.fig.suptitle(
             f"{well_name} Synthetic Seismogram (Load 3D seismic to correlate)",
             color=self.colors['warning'],
-            fontsize=12,
+            fontsize=16,
             fontweight='bold'
         )
 

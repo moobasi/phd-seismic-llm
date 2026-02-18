@@ -70,12 +70,12 @@ class Theme:
     ERROR = "#ff4757"
     INFO = "#3498db"
 
-    FONT_TITLE = ("Segoe UI", 16, "bold")
-    FONT_HEADING = ("Segoe UI", 12, "bold")
-    FONT_BODY = ("Segoe UI", 10)
-    FONT_SMALL = ("Segoe UI", 9)
-    FONT_CHAT = ("Segoe UI", 11)
-    FONT_MONO = ("Consolas", 10)
+    FONT_TITLE = ("Segoe UI", 20, "bold")
+    FONT_HEADING = ("Segoe UI", 14, "bold")
+    FONT_BODY = ("Segoe UI", 12)
+    FONT_SMALL = ("Segoe UI", 11)
+    FONT_CHAT = ("Segoe UI", 13)
+    FONT_MONO = ("Consolas", 12)
 
 
 # =============================================================================
