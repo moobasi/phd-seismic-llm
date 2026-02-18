@@ -147,10 +147,12 @@ class EDAConfig:
 
     @classmethod
     def from_json(cls, json_path: str) -> 'EDAConfig':
-        """Load config from JSON file"""
+        """Load config from JSON file, ignoring unknown fields"""
         with open(json_path, 'r') as f:
             data = json.load(f)
-        return cls(**data)
+        # Only use fields that exist in this dataclass
+        valid_fields = {k: v for k, v in data.items() if k in cls.__dataclass_fields__}
+        return cls(**valid_fields)
 
     @classmethod
     def from_dict(cls, data: Dict) -> 'EDAConfig':

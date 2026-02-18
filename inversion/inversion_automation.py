@@ -185,12 +185,14 @@ class InversionConfig:
     def from_json(cls, path: str) -> 'InversionConfig':
         with open(path, 'r') as f:
             data = json.load(f)
-        # Convert tuple fields
+        # Convert tuple fields if present
         if 'bin_size' in data:
             data['bin_size'] = tuple(data['bin_size'])
         if 'grid_spacing' in data:
             data['grid_spacing'] = tuple(data['grid_spacing'])
-        return cls(**data)
+        # Only use fields that exist in this dataclass
+        valid_fields = {k: v for k, v in data.items() if k in cls.__dataclass_fields__}
+        return cls(**valid_fields)
 
     def to_json(self, path: str):
         data = asdict(self)

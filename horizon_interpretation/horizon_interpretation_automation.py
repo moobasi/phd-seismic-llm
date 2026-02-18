@@ -165,7 +165,9 @@ class HorizonInterpretationConfig:
     def from_json(cls, path: str) -> 'HorizonInterpretationConfig':
         with open(path, 'r') as f:
             data = json.load(f)
-        return cls(**data)
+        # Only use fields that exist in this dataclass
+        valid_fields = {k: v for k, v in data.items() if k in cls.__dataclass_fields__}
+        return cls(**valid_fields)
 
     def to_json(self, path: str):
         with open(path, 'w') as f:
