@@ -136,7 +136,8 @@ class WellIntegrationConfig:
     def to_json(self, path: str):
         """Save configuration to JSON file"""
         data = asdict(self)
-        if 'formations' in data:
+        # Handle formations dict (convert tuples to lists for JSON)
+        if 'formations' in data and isinstance(data['formations'], dict):
             data['formations'] = {k: list(v) for k, v in data['formations'].items()}
         with open(path, 'w') as f:
             json.dump(data, f, indent=2)

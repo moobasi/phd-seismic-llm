@@ -369,6 +369,19 @@ class HorizonInterpretationAutomation:
             print("\n[STEP 5] Tracking horizons...")
             self.tracker.update("tracking", 0.1, "Starting horizon tracking")
 
+            # Handle formations as either dict or list
+            if isinstance(self.config.formations, list):
+                # Convert list to dict with auto-generated depth values
+                n_samples = self.volume.shape[2] if hasattr(self, 'volume') else 2001
+                sample_rate = getattr(self.config, 'sample_rate_ms', 4.0)
+                total_time = n_samples * sample_rate
+                n_formations = len(self.config.formations)
+                depth_step = total_time / (n_formations + 1)
+                formations_dict = {}
+                for i, name in enumerate(self.config.formations):
+                    seed_time = depth_step * (i + 1)
+                    formations_dict[name] = [seed_time, seed_time + depth_step * 0.5, "#808080", "peak"]
+                self.config.formations = formations_dict
             formations = list(self.config.formations.keys())
             total_formations = len(formations)
 
