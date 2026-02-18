@@ -476,15 +476,23 @@ class VisualAnalysisTab(tk.Frame):
         try:
             img = Image.open(path)
 
-            # Get frame size
-            frame_width = self.image_label.winfo_width() or 600
-            frame_height = self.image_label.winfo_height() or 400
+            # Use fixed large size for better visibility
+            # The image area should be large enough to see details
+            max_width = 800
+            max_height = 600
 
-            # Resize maintaining aspect ratio
-            img.thumbnail((frame_width - 20, frame_height - 20))
+            # Get actual frame size if available, use minimums
+            frame_width = max(self.image_label.winfo_width(), max_width)
+            frame_height = max(self.image_label.winfo_height(), max_height)
+
+            # Resize maintaining aspect ratio - use larger thumbnail
+            img.thumbnail((frame_width - 40, frame_height - 40), Image.Resampling.LANCZOS)
 
             self.image_ref = ImageTk.PhotoImage(img)
             self.image_label.config(image=self.image_ref, text="")
+
+            # Show filename
+            self.master.title(f"Visual Analysis - {Path(path).name}")
 
         except Exception as e:
             self.image_label.config(text=f"Error loading image:\n{e}")
@@ -499,9 +507,11 @@ class VisualAnalysisTab(tk.Frame):
             messagebox.showerror("Error", "AI Agent not available.")
             return
 
-        # This will trigger interpretation through the agent
-        # Parent should handle switching to chat tab
-        self.event_generate("<<InterpretImage>>", data=self.current_image_path)
+        # Store the path for the parent to access
+        self.pending_interpret_path = self.current_image_path
+
+        # Generate event - parent will handle interpretation
+        self.event_generate("<<InterpretImage>>")
 
 
 # =============================================================================
@@ -914,15 +924,45 @@ class SeismicAIAssistant:
 
     def _on_interpret_image(self, event):
         """Handle image interpretation request from Visual Analysis tab."""
+        # Get the visual analysis tab
+        visual_tab = self.notebook.nametowidget(self.notebook.tabs()[1])
+
+        # Get the pending image path
+        image_path = getattr(visual_tab, 'pending_interpret_path', None)
+
+        if not image_path:
+            messagebox.showinfo("No Image", "No image selected for interpretation.")
+            return
+
         # Switch to chat tab
         self.notebook.select(0)
 
-        # Get image path (would need custom event handling)
-        # For now, show message
+        # Add user message with image
         self.chat_display.add_message(
-            "Image selected for interpretation. Click 'Send' to analyze.",
-            is_user=False
+            f"Interpret this seismic image: {Path(image_path).name}",
+            is_user=True,
+            image_path=image_path
         )
+        self.chat_display.add_typing_indicator()
+        self.send_btn.config(state="disabled")
+
+        # Process image interpretation in thread
+        def process():
+            try:
+                if self.agent:
+                    result = self.agent.process_message(
+                        "Interpret this seismic image. Describe what you see including: "
+                        "geological features, fault patterns, horizons, amplitude anomalies, "
+                        "and any hydrocarbon indicators.",
+                        image_path=image_path
+                    )
+                    self.message_queue.put(("response", result))
+                else:
+                    self.message_queue.put(("error", "Agent not available"))
+            except Exception as e:
+                self.message_queue.put(("error", str(e)))
+
+        threading.Thread(target=process, daemon=True).start()
 
     def run(self):
         """Start the application."""

@@ -164,32 +164,47 @@ class OllamaClient:
             cmd = ["ollama", "run", self.model, full_prompt]
 
             if callback:
-                # Streaming mode
+                # Streaming mode with timeout
                 process = subprocess.Popen(
                     cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                     text=True, bufsize=1
                 )
                 response = ""
-                for line in process.stdout:
-                    response += line
-                    callback(line)
-                process.wait()
-                return response
+                import select
+                import time
+                start_time = time.time()
+                timeout_seconds = 120  # 2 minute timeout
+
+                while True:
+                    # Check timeout
+                    if time.time() - start_time > timeout_seconds:
+                        process.terminate()
+                        return response + "\n[Response truncated due to timeout]"
+
+                    # Non-blocking read on Windows
+                    line = process.stdout.readline()
+                    if line:
+                        response += line
+                        callback(line)
+                    elif process.poll() is not None:
+                        break  # Process finished
+
+                return response if response else "No response from AI."
             else:
-                # Blocking mode
+                # Blocking mode with timeout
                 result = subprocess.run(
-                    cmd, capture_output=True, text=True, timeout=180
+                    cmd, capture_output=True, text=True, timeout=120
                 )
-                return result.stdout.strip()
+                return result.stdout.strip() if result.stdout.strip() else "No response from AI."
 
         except subprocess.TimeoutExpired:
-            return "Error: Request timed out. Please try again."
+            return "Response timed out. The AI is taking too long. Please try a simpler query."
         except Exception as e:
             return f"Error: {str(e)}"
 
     def interpret_image(self, image_path: str, prompt: str) -> str:
         """
-        Interpret an image using vision model.
+        Interpret an image using vision model (llava).
 
         Args:
             image_path: Path to image file
@@ -199,20 +214,50 @@ class OllamaClient:
             AI interpretation text
         """
         if not self.vision_model:
-            return "Error: No vision model available. Please install llava."
+            # Try to use llava if available
+            for model in self.available_models:
+                if 'llava' in model.lower():
+                    self.vision_model = model
+                    break
+
+            if not self.vision_model:
+                return "Error: No vision model available. Please install llava with: ollama pull llava:13b"
 
         if not Path(image_path).exists():
             return f"Error: Image not found: {image_path}"
 
         try:
-            full_prompt = f"{prompt}\n\nAnalyze the image at: {image_path}"
-            cmd = ["ollama", "run", self.vision_model, full_prompt, image_path]
+            # llava expects the prompt with the image path in a specific format
+            # Use the image as an argument to the model
+            full_prompt = f"You are analyzing a seismic image. {prompt}"
+
+            # For llava, we need to pass the image differently
+            # Using the file:// protocol or direct path
+            import platform
+            if platform.system() == 'Windows':
+                # Windows path format for ollama
+                img_path = image_path.replace('\\', '/')
+            else:
+                img_path = image_path
+
+            # Construct command for llava - image should be last argument
+            cmd = ["ollama", "run", self.vision_model, f"{full_prompt} [img]{img_path}[/img]"]
 
             result = subprocess.run(
-                cmd, capture_output=True, text=True, timeout=300
+                cmd, capture_output=True, text=True, timeout=180
             )
-            return result.stdout.strip()
 
+            response = result.stdout.strip()
+            if not response:
+                # Try alternative format
+                cmd2 = ["ollama", "run", self.vision_model, full_prompt, img_path]
+                result2 = subprocess.run(cmd2, capture_output=True, text=True, timeout=180)
+                response = result2.stdout.strip()
+
+            return response if response else "Could not interpret the image. Please try again."
+
+        except subprocess.TimeoutExpired:
+            return "Image interpretation timed out. Please try with a smaller image or simpler prompt."
         except Exception as e:
             return f"Error interpreting image: {str(e)}"
 
@@ -698,10 +743,22 @@ Format responses with markdown for readability."""
 
     def _run_all_steps(self) -> ToolResult:
         """Run all processing steps sequentially."""
+        # Start running steps in background
+        def run_steps():
+            for step_num in PROCESSING_STEPS.keys():
+                self._start_step_execution(step_num)
+                # Wait for step to complete (simple polling)
+                import time
+                while self._running_process is not None:
+                    time.sleep(1)
+                time.sleep(0.5)  # Brief pause between steps
+
+        threading.Thread(target=run_steps, daemon=True).start()
+
         return ToolResult(
             success=True,
-            message="Starting all processing steps. This will take some time...",
-            data={"steps": list(PROCESSING_STEPS.keys()), "status": "queued"}
+            message="I've started running all 9 processing steps sequentially. You can monitor progress in the Workflow Progress panel on the right. This will take some time to complete.",
+            data={"steps": list(PROCESSING_STEPS.keys()), "status": "running"}
         )
 
     def _run_remaining_steps(self) -> ToolResult:
