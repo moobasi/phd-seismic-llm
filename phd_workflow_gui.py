@@ -892,27 +892,56 @@ class PHDWorkflowApp:
         # Run in background thread
         def run():
             try:
-                # Build command
+                # Build command based on step-specific requirements
                 module = step_info['module']
-                cmd = [
-                    sys.executable, "-m", module,
-                    "--config", str(get_framework_dir() / "project_config.json")
-                ]
+                cmd = [sys.executable, "-m", module]
 
-                # Add step-specific arguments
-                if step_num in [1, 2, 4, 5, 6]:  # Steps that need seismic
+                # Step-specific argument handling (matching each script's argparse)
+                config_path = str(get_framework_dir() / "project_config.json")
+                output_dir = self.config.output_directory
+
+                if step_num == 1:  # EDA: segy_file (positional), -c, -o
                     if self.config.seismic_3d_path:
-                        cmd.extend(["--segy", self.config.seismic_3d_path])
+                        cmd.append(self.config.seismic_3d_path)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
 
-                if step_num == 3:  # Well integration
+                elif step_num == 2:  # Dead Trace: input_segy (positional), -c, --output-dir
+                    if self.config.seismic_3d_path:
+                        cmd.append(self.config.seismic_3d_path)
+                    cmd.extend(["-c", config_path, "--output-dir", output_dir])
+
+                elif step_num == 3:  # Well Integration: las_directory (positional), -c, -o
                     if self.config.well_logs_directory:
-                        cmd.extend(["--las-dir", self.config.well_logs_directory])
+                        cmd.append(self.config.well_logs_directory)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
 
-                if step_num == 7:  # 2D processing
+                elif step_num == 4:  # Horizon: seismic_file (positional), -c, -o
+                    if self.config.seismic_3d_path:
+                        cmd.append(self.config.seismic_3d_path)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
+
+                elif step_num == 5:  # Attributes: base_dir (positional), -c, -o
+                    # Uses outputs from previous steps as base_dir
+                    cmd.append(output_dir)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
+
+                elif step_num == 6:  # Inversion: seismic_file (positional), -c, -o
+                    if self.config.seismic_3d_path:
+                        cmd.append(self.config.seismic_3d_path)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
+
+                elif step_num == 7:  # 2D: input_directory (positional), -c, -o
                     if self.config.seismic_2d_directory:
-                        cmd.extend(["--input-dir", self.config.seismic_2d_directory])
+                        cmd.append(self.config.seismic_2d_directory)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
 
-                cmd.extend(["--output-dir", self.config.output_directory])
+                elif step_num == 8:  # 2D-3D Integration: -c only (no positional)
+                    cmd.extend(["-c", config_path])
+
+                elif step_num == 9:  # Deep Learning: segy_file (positional), --output-dir
+                    if self.config.seismic_3d_path:
+                        cmd.append(self.config.seismic_3d_path)
+                    cmd.extend(["--output-dir", output_dir])
 
                 # Run process with real-time output streaming
                 process = subprocess.Popen(

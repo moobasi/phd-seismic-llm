@@ -706,11 +706,68 @@ Format responses with markdown for readability."""
         def run():
             step_info = PROCESSING_STEPS[step_num]
             script_path = Path(__file__).parent / step_info["script"]
+            config_path = str(Path(__file__).parent / "project_config.json")
+
+            # Load config for paths
+            try:
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+            except Exception:
+                config = {}
+
+            seismic_3d = config.get("seismic_3d_path", "")
+            seismic_2d = config.get("seismic_2d_directory", "")
+            well_logs = config.get("well_logs_directory", "")
+            output_dir = config.get("output_directory", str(Path(__file__).parent / "outputs"))
 
             self.state.set_step_progress(step_num, 0.1, f"Starting {step_info['name']}...")
 
             try:
+                # Build command with proper arguments for each script
                 cmd = [sys.executable, str(script_path)]
+
+                if step_num == 1:  # EDA: segy_file (positional), -c, -o
+                    if seismic_3d:
+                        cmd.append(seismic_3d)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
+
+                elif step_num == 2:  # Dead Trace: input_segy (positional), -c, --output-dir
+                    if seismic_3d:
+                        cmd.append(seismic_3d)
+                    cmd.extend(["-c", config_path, "--output-dir", output_dir])
+
+                elif step_num == 3:  # Well Integration: las_directory (positional), -c, -o
+                    if well_logs:
+                        cmd.append(well_logs)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
+
+                elif step_num == 4:  # Horizon: seismic_file (positional), -c, -o
+                    if seismic_3d:
+                        cmd.append(seismic_3d)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
+
+                elif step_num == 5:  # Attributes: base_dir (positional), -c, -o
+                    cmd.append(output_dir)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
+
+                elif step_num == 6:  # Inversion: seismic_file (positional), -c, -o
+                    if seismic_3d:
+                        cmd.append(seismic_3d)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
+
+                elif step_num == 7:  # 2D: input_directory (positional), -c, -o
+                    if seismic_2d:
+                        cmd.append(seismic_2d)
+                    cmd.extend(["-c", config_path, "-o", output_dir])
+
+                elif step_num == 8:  # 2D-3D Integration: -c only
+                    cmd.extend(["-c", config_path])
+
+                elif step_num == 9:  # Deep Learning: segy_file (positional), --output-dir
+                    if seismic_3d:
+                        cmd.append(seismic_3d)
+                    cmd.extend(["--output-dir", output_dir])
+
                 process = subprocess.Popen(
                     cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                     text=True, bufsize=1, cwd=str(Path(__file__).parent)
@@ -731,7 +788,7 @@ Format responses with markdown for readability."""
                     self.state.mark_step_completed(step_num, {"output": "".join(output_lines[-20:])})
                     self.output_queue.put(("complete", step_num))
                 else:
-                    self.output_queue.put(("error", f"Step {step_num} failed"))
+                    self.output_queue.put(("error", f"Step {step_num} failed with code {process.returncode}"))
 
             except Exception as e:
                 self.output_queue.put(("error", str(e)))
